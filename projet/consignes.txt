@@ -1,0 +1,17 @@
+Indications données par le professeur:
+
+
+
+Coder le jeu 
+(Penser à mettre en paramètre n = nombre de lignes/colonnes (4 pour le quarto) quinto?)
+
+Algorithme minmax 
+(En essayant d’avoir une certaine profondeur)
+
+(Alpha bêta si minmax fonctionne)
+
+Interface à la fin
+
+
+
+			
