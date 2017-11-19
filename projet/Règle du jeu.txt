@@ -1,0 +1,30 @@
+JEU DE QUARTO
+
+Composition et début du jeu :
+Un plateau de 16 cases (4*4) et 16 pièces, au début à côté du jeu. Les pièces sont toutes différentes et 
+possèdent 4 charactères: claire ou foncée, haute ou petite, pleine ou creuse, ronde ou carrée.
+
+But du jeu :
+Créer sur le plateau un alignement (horizontal, vertical, ou diagonal) de 4 pièces ayant au moins un 
+caractère commun.
+
+La partie :
+Premier joueur tiré au sort.
+Il choisit une pièce parmi celles sur le côté du plateau et la donne à son adversaire.
+Celui-ci doit la placer sur le plateau, sur une case libre. Il choisit ensuite une pièce qu'il donne à son 
+adversaire.
+Et ainsi de suite.
+
+Fin de la partie : 
+Un joueur fait "Quarto!" en plaçant la pièce donnée, faisant un alignement de 4 pièces de même caractéristique
+(NB : ce joueur n'a pas nécessairement placé les 4 pièces, mais uniquement la dernière). Il gagne alors
+la partie. Si ce joueur n'a pas reconnu son alignement et qu'il donne une pièce à son adversaire, celui-ci
+peut, à ce moment, annoncer "Quarto!" et gagne alors la partie. Si aucun des deux n'a reconnu l'alignement,
+celui-ci perd sa valeur dans la suite du jeu, qui se poursuit alors.
+Il y a victoire si un joueur crie "Quarto!" ; égalité si toutes les pièces ont été placée, sans alignement.
+(Je propose que, dans ce cas, le premier joueur qui reconnaît un alignement et crie "Quarto" gagne la partie)
+
+Variantes :
+Alignement + carré
+plateau n*n (donc des pièces de n caractéristiques et un n-alignement pour gagner)
+
