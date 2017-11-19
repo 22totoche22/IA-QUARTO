@@ -28,3 +28,6 @@ Variantes :
 Alignement + carré
 plateau n*n (donc des pièces de n caractéristiques et un n-alignement pour gagner)
 
+
+(source : https://www.gigamic.com/files/catalog/products/rules/quarto_rule-fr.pdf)
+
