@@ -6,4 +6,4 @@ Question à se poser
  - Comment le modéliser pour un n >= 5 ? car pour un jeu 4x4, il y a exactement 16 pièces car 4 caractéristiques 
 
 Pour les caractéristiques, ne peut on pas faire un n-uplet composé soit de 0 ou de 1 et donc qui a soit la caractéristique (1), soit ne l'a pas(0)?
-ex pour n=4: (1,1,1,0) (est blanc,grand,carré mais pas troué)
+ex pour n=4: (1,1,1,0) (est blanc,grand,carré mais pas troué)? C'est exactement ce que je propose dans mon brouillon (Elie).
