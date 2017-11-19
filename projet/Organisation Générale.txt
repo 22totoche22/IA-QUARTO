@@ -1,0 +1,6 @@
+Voir le jeu du quarto comme un morpion en 4dimensions
+
+Question à se poser
+ - Comment modéliser le jeu dans la console ?
+ - Comment modéliser les caractéristiques des pièces ?
+ - Comment le modéliser pour un n >= 5 ? car pour un jeu 4x4, il y a exactement 16 pièces car 4 caractéristiques 
