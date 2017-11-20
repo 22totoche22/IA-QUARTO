@@ -6,7 +6,7 @@ class Piece: # cette classe définit ce qu'est une pièce du jeu
         self.shape = shape # rond/carré (0/1 par ex )
         self.matter = matter # creux ou plein (idem)
         
-class Game(Piece): # cette classe définit ce qu'est une situation de jeux (un étape, une configuration du plateau à un moment donné ...)
+class Game # cette classe définit ce qu'est une situation de jeux (un étape, une configuration du plateau à un moment donné ...)
     
     def __init__(self):
         self.set = [[],[],[],[]] # ceci est le plateau du jeu 4*4 avec aucune pièce dessus (ne fonctionne pas commen ça mais vous comprenez l'idée)
@@ -15,5 +15,4 @@ class Game(Piece): # cette classe définit ce qu'est une situation de jeux (un �
     def add(self, id_piece, coord): # méthode qui ajoute une pièce reconnue par son identifiant sur le plateau à la case de coordonée coord ( couple)
         self.set[coord[0]][coord[1]] = self.bag[id_piece]
         del self.bag[id_piece] # on enlève la pièce du sac car elle est sur le plateau
-        
         
