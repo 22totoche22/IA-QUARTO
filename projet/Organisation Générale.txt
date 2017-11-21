@@ -4,6 +4,46 @@ Question à se poser
  - Comment modéliser le jeu dans la console ?
  - Comment modéliser les caractéristiques des pièces ?
  - Comment le modéliser pour un n >= 5 ? car pour un jeu 4x4, il y a exactement 16 pièces car 4 caractéristiques 
+ - Comment est caractérisé un tour ? ==> Un tour = 2 coups (poser piece + choisir piece) ?
+ 
+Trucs à implémenter plus tard:
+ - alpha beta
+ - amélioration de l'algo pour vérifier si l(on a gagné
+ - Interface graphique
+ - Dans les regles du jeu, le joueur croyant avoir gagné doit crier "Quarto!" pour l'indiquer à l'autre, puis doit montrer la rangée gagnante. On peut rajouter un bouton "Quarto" pour indiquer que l'on pense avoir gagner, et si on n'a pas vu que l'on avait gagner et que le joueur pose une pièce quelconque, l'autre joueur peut dire directement quarto au dfébut de son tour
 
 Pour les caractéristiques, ne peut on pas faire un n-uplet composé soit de 0 ou de 1 et donc qui a soit la caractéristique (1), soit ne l'a pas(0)?
 ex pour n=4: (1,1,1,0) (est blanc,grand,carré mais pas troué)? C'est exactement ce que je propose dans mon brouillon (Elie).
+
+OUI I AGREE . raphael
+
+
+Structure du projet (Proposition de rapĥ) :
+- Classe Game (qui s'occupe de toute les interactions avec le plateau de jeu et du stockage de l'etat de jeu)
+  - attributs :
+   - board = tableau de n*n contenant des pièces
+   - bag = liste de pièces
+   - player = 0 ou 1 pour indiquer le joueur actuel 
+   - choosen_piece = (La pièce choisie par l'autre joueur)
+   - win = booleen indiquant si le jeu est finit(et ainsi qui est le joueur gagnant)
+   - moves_played = une liste de tuple (x, y, , piece_posée, choosen_piece) qui caractérise un tour
+  - méthodes :
+   - init(): (pour initialiser le tableau de jeu et le sac de pièces (qui seront toutes différentes))
+   - insert_piece(piece, x, y): (pour ajouter la piece a la coordonnée x, y de la board
+   - PAS SUR undo(): (pour annuler le coup joué)
+   - 
+
+- Classe Piece (représentation d'une pièce de jeu)
+ - attributs :
+  - caracteristics = un n-uplet qui désigne les caractéristiques de la pièce (0,1,0,0) pourra par exemple vouloir dire que la pièce est ronde, grande, trouée, blanche
+  
+- Classe UI_game (classe pour s'occuper de l'affichage du plateau de jeu (UI = user interface), pour l'instant affichage dans la console)
+ (- Un tour de jeu normal = placer une pièce, puis en choisir une pour le joueur suivant)
+
+- Classe Strategy (qui s'occupera de l'IA):
+ - attributs :
+ - méthodes :
+  - minmax : implémentation de l'algo min max (but = tester tout les états de jeu possible : (n-nb_pieces_jouees)*(n*n - nb_pieces_jouées) et pour chacuns de ces cas là, sélctionner une pièce restante. Donc nombre de possibilités = (n*n - nb_pieces_jouées) * (n-nb_pieces_jouées)*(n-nb_pieces_jouees)
+
+
+  
