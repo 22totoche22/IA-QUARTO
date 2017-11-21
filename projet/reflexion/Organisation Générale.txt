@@ -1,6 +1,6 @@
 ﻿Voir le jeu du quarto comme un morpion en 4dimensions
 
-Question à se poser
+Questions à se poser
  - Comment modéliser le jeu dans la console ?
  - Comment modéliser les caractéristiques des pièces ?
  - Comment le modéliser pour un n >= 5 ? car pour un jeu 4x4, il y a exactement 16 pièces car 4 caractéristiques 
@@ -13,7 +13,8 @@ Trucs à implémenter plus tard:
  - Dans les regles du jeu, le joueur croyant avoir gagné doit crier "Quarto!" pour l'indiquer à l'autre, puis doit montrer la rangée gagnante. On peut rajouter un bouton "Quarto" pour indiquer que l'on pense avoir gagner, et si on n'a pas vu que l'on avait gagner et que le joueur pose une pièce quelconque, l'autre joueur peut dire directement quarto au dfébut de son tour
 
 Pour les caractéristiques, ne peut on pas faire un n-uplet composé soit de 0 ou de 1 et donc qui a soit la caractéristique (1), soit ne l'a pas(0)?
-ex pour n=4: (1,1,1,0) (est blanc,grand,carré mais pas troué)? C'est exactement ce que je propose dans mon brouillon (Elie).
+ex pour n=4: (1,1,1,0) (est blanc,grand,carré mais pas troué)? (Adrien)
+C'est exactement ce que je propose dans mon brouillon (Elie).
 
 OUI I AGREE . raphael
 
