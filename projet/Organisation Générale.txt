@@ -45,6 +45,7 @@ Structure du projet (Proposition de rapĥ) :
  - méthodes :
   - minmax : implémentation de l'algo min max (but = tester tout les états de jeu possible : (n-nb_pieces_jouees)*(n*n - nb_pieces_jouées) et pour chacuns de ces cas là, sélctionner une pièce restante. Donc nombre de possibilités = (n*n - nb_pieces_jouées) * (n-nb_pieces_jouées)*(n-nb_pieces_jouees)
 
-Je suis d'accord sur cette organisiation ainsi que sur la représentation des objets. Je pense juste qu'il faut représenter le sac des pièces qu'il reste par un dictionnaire : comme ça, chaque pièce a un identifiant qui ne change pas pendant toute la durée du jeu. (Elie)
+Je suis d'accord sur cette organisiation ainsi que sur la représentation des objets. Je pense juste qu'il faut représenter le sac des pièces qu'il reste par un dictionnaire : comme ça, chaque pièce a un identifiant qui ne change pas pendant toute la durée du jeu. 
+Faudra revoir la classe Game pour préciser un peu plus les arguments/attributs/méthodes etc (+ qu'est ce qu'un tour dans ce jeu?). Ca peut faire une bonne base(Elie)
 
   
