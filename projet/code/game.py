@@ -12,10 +12,6 @@ class Game: # cette classe définit ce qu'est une situation de jeux (un étape, 
         
 
 
-
-
-
-
 ### test         
 
 import numpy as np
@@ -29,15 +25,15 @@ class Piece:
     def __repr__(self):
         print(self.descr)
         
-class Game(Piece):
+class Game:
     
     def __init__(self, n):
+        self.width = n
         self.set = np.zeros((n,n))
         self.bag = {}
         self.player = "PLAYER A"
         self.win = False
         self.end = False
-        self.winner = None
     
     def __repr__(self):
         layer = [np.zeros((n,n))*n]
