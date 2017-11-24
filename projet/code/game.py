@@ -1,5 +1,7 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
 
 import numpy as np
 
@@ -47,18 +49,20 @@ class Game:
         x,y = coord[0], coord[1]
 
         for k in range(self.size):
+            
             try:
                 self.board[x][y][k] = self.bag[num_piece].charact[k]
             except Exception: #Error if self.bag[num_piece] doesn't exist anymore
                 print(Bag_error("this piece as already been played: Choose an other one"))
-                num_piece = int(input("num_piece?"))
+                num_piece = int(input("num_piece ? "))
                 self.board[x][y][k] = self.bag[num_piece].charact[k] #adds the Piece on the board
 
             try:
                 coord = self.coords[self.coords.index(coord)]
             except Exception: #Error if the coordinates "coord" have already been choosen 
-                print(Cell_error("this cell is already taken: Choose an other ones"))
-                coord = tuple(input("coord?"))
+                print(Cell_error("this cell is already taken: Choose an other one"))
+                coord = tuple(input("coord ? "))
+                x,y = coord[0], coord[1]
                 self.board[x][y][k] = self.bag[num_piece].charact[k] #adds the Piece on the board
 
         
@@ -118,39 +122,6 @@ jeu.full_bag()
 
 
 jeu.play_piece(2,(2,3))
-jeu.play_piece(2,(1,3))
+jeu.play_piece(2,(2,3))
 print(jeu.board)
-print(jeu.bag)
 print(jeu.coords)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
