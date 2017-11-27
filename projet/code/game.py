@@ -1,7 +1,6 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
+
 
 import numpy as np
 import piece
@@ -91,16 +90,27 @@ def layer_tab(board, k):     #return the k layer of a 3D board
         return np.array(layer)
 
 
-def row(list,n = SIZE): #returns if there is a row of n '1' in a simple list
-    compteur = 0
-    max_compteur = 0
+
+def row(list,n): #returns if there is a row of n '1' in a simple list
+    compteur_1 = 0
+    compteur_0 = 0
+    max_compteur_1 = 0
+    max_compteur_0 = 0
     for i in list:
         if i == 1:
-            compteur += 1
-            max_compteur = max(compteur,max_compteur)
+            compteur_1 += 1
+            compteur_0 = 0
+            max_compteur_1 = max(compteur_1,max_compteur_1)
+            max_compteur_0 = 0
         else:
-            compteur = 0
-    return max_compteur == n
+            compteur_1 = 0
+            compteur_0 += 1
+            max_compteur_0 = max(compteur_0,max_compteur_0)
+            max_compteur_1 = 0
+       
+            
+    
+    return max_compteur_1 == n or max_compteur_0 == n
 
 
 def row_layer(layer,n,coord): #returns if there is a horizontal, vertical, or diagonal row of n '1' with the point whose coordinates are (x,y) in the layer, coord is a tuple
@@ -114,10 +124,4 @@ def row_layer(layer,n,coord): #returns if there is a horizontal, vertical, or di
     return victory
 
 
-    
-my_piece = piece.Piece([0,1,1,0])
-jeu = Game(SIZE)
 
-jeu.play_piece(2,(2,3))
-print(jeu.board)
-print(jeu.coords)
