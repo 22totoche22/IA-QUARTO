@@ -4,6 +4,9 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
+import piece
+
+
 
 PLAYER_A = 1
 PLAYER_B = 0
@@ -15,41 +18,34 @@ class Bag_error(Exception):
 
 class Cell_error(Exception):
     pass
-
-class Piece:
-     
-    def __init__(self, charact):
-         self.charact = charact
-         self.coord = ()
-         
-    def __repr__(self):
-        return str(self.charact)
         
 class Game:
     
     def __init__(self, size):
         self.size = size
         self.board = [[[None for i in range(self.size)] for j in range(self.size)] for k in range(self.size)] #creates a 3D board
+
         self.bag = {}
+        self.init_full_bag()
+
         self.player = PLAYER_A
+        self.selected_piece = None
         self.win = False
         self.end = False
         self.coords = [(i,j) for i in range(self.size) for j in range(self.size)] #list of all possibles coordinates
 
 
-    def full_bag(self):   #initializes the bag at the beginning of the game
+    def init_full_bag(self):   #initializes the bag at the beginning of the game
         for i in range(2**self.size):
-            size_uplet = []
-            for j in str(format(i,'b')).rjust(self.size,'0'):   #transforms the number in a binary number, adding '0' to have the same length for all numbers
-                size_uplet.append(int(j))                       #creates a list composed by the numbers of the binary number
-            self.bag[i] = Piece(size_uplet)                     #adds the list in the bag, the key equals to the binary number
+            p = piece.from_decimal(i, SIZE)
+            self.bag[i] = p                  #adds the list in the bag, the key equals to the binary number
 
 
+    # TODO : réécrire cette fonction en remplaçant num_piece par un objet Piece
     def play_piece(self,num_piece,coord): #adds a object Piece from the bag  on the board at the coordinates (x,y) and remove it from the bag, coord is a tuple
         x,y = coord[0], coord[1]
 
         for k in range(self.size):
-            
             try:
                 self.board[x][y][k] = self.bag[num_piece].charact[k]
             except Exception: #Error if self.bag[num_piece] doesn't exist anymore
@@ -68,6 +64,10 @@ class Game:
         
         del self.coords[self.coords.index(coord)]
         del self.bag[num_piece]                             #removes the Piece from the bag
+
+    # TODO: cette fonction
+    # def play_piece(self, coord):
+    #     self.play_piece()
             
 
 #rajouter erreur si pièce plus dans le sac,...
@@ -91,7 +91,7 @@ def layer_tab(board, k):     #return the k layer of a 3D board
         return np.array(layer)
 
 
-def row(list,n): #returns if there is a row of n '1' in a simple list
+def row(list,n = SIZE): #returns if there is a row of n '1' in a simple list
     compteur = 0
     max_compteur = 0
     for i in list:
@@ -115,13 +115,9 @@ def row_layer(layer,n,coord): #returns if there is a horizontal, vertical, or di
 
 
     
-piece = Piece([0,1,1,0])
+my_piece = piece.Piece([0,1,1,0])
 jeu = Game(SIZE)
-jeu.full_bag()
 
-
-
-jeu.play_piece(2,(2,3))
 jeu.play_piece(2,(2,3))
 print(jeu.board)
 print(jeu.coords)
