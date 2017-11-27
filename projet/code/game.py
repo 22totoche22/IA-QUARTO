@@ -36,8 +36,7 @@ class Game:
 
     def init_full_bag(self):   #initializes the bag at the beginning of the game
         for i in range(2**self.size):
-            p = piece.from_decimal(i, SIZE)
-            self.bag[i] = p                  #adds the list in the bag, the key equals to the binary number
+            self.bag[i] = piece.Piece(i,self.size)                  #adds the list in the bag, the key equals to the binary number
 
 
     # TODO : réécrire cette fonction en remplaçant num_piece par un objet Piece
@@ -124,4 +123,10 @@ def row_layer(layer,n,coord): #returns if there is a horizontal, vertical, or di
     return victory
 
 
-
+jeu = Game(4)
+print(jeu.bag)
+print(jeu.board)
+jeu.play_piece(3,(1,1))
+print(jeu.bag)
+print(jeu.board)
+jeu.play_piece(4,(1,1))
