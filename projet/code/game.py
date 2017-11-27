@@ -39,36 +39,24 @@ class Game:
             self.bag[i] = piece.Piece(i,self.size)                  #adds the list in the bag, the key equals to the binary number
 
 
-    # TODO : réécrire cette fonction en remplaçant num_piece par un objet Piece
-    def play_piece(self,num_piece,coord): #adds a object Piece from the bag  on the board at the coordinates (x,y) and remove it from the bag, coord is a tuple
-        x,y = coord[0], coord[1]
+    def play_piece(self,coord):
+        x, y = coord[0], coord[1]
+        try :
+            coord = self.coords[self.coords.index(coord)]
+            del self.coords[self.coords.index(coord)]
+        except Exception:  # Error if the coordinates "coord" have already been choosen
+                print(Cell_error("this cell is already taken: Choose an other one"))
 
         for k in range(self.size):
-            try:
-                self.board[x][y][k] = self.bag[num_piece].charact[k]
-            except Exception: #Error if self.bag[num_piece] doesn't exist anymore
-                print(Bag_error("this piece as already been played: Choose an other one"))
-                num_piece = int(input("num_piece ? "))
-                self.board[x][y][k] = self.bag[num_piece].charact[k] #adds the Piece on the board
+                self.board[x][y][k] = self.selected_piece.charact[k]
 
-            try:
-                coord = self.coords[self.coords.index(coord)]
-            except Exception: #Error if the coordinates "coord" have already been choosen 
-                print(Cell_error("this cell is already taken: Choose an other one"))
-                coord = tuple(input("coord ? "))
-                x,y = coord[0], coord[1]
-                self.board[x][y][k] = self.bag[num_piece].charact[k] #adds the Piece on the board
-
-        
-        del self.coords[self.coords.index(coord)]
-        del self.bag[num_piece]                             #removes the Piece from the bag
-
-    # TODO: cette fonction
-    # def play_piece(self, coord):
-    #     self.play_piece()
-            
-
-#rajouter erreur si pièce plus dans le sac,...
+    def select_piece(self,num):
+        try:
+            piece = self.bag[num]
+            del self.bag[num]                             #removes the Piece from the bag
+            self.selected_piece = piece
+        except Exception: #Error if self.bag[num_piece] doesn't exist anymore
+            print(Bag_error("this piece has already been played: Choose an other one"))
 
 
     def full_row(self,coord,n): #verifies if there is a full horizontal, vertical, or diagonal row of n pieces with the same characteristics after putting the piece at the coordinates(x,y) on the board
@@ -122,11 +110,16 @@ def row_layer(layer,n,coord): #returns if there is a horizontal, vertical, or di
     victory = row(horizontal,n) or row(vertical,n) or row(diagonal_d,n) or row(diagonal_g,n)
     return victory
 
-
 jeu = Game(4)
 print(jeu.bag)
 print(jeu.board)
-jeu.play_piece(3,(1,1))
+jeu.select_piece(3)
+print(jeu.selected_piece)
 print(jeu.bag)
+jeu.play_piece((1,1))
 print(jeu.board)
-jeu.play_piece(4,(1,1))
+jeu.select_piece(3)
+jeu.select_piece(4)
+print(jeu.selected_piece)
+jeu.play_piece((1,1))
+print(jeu.board)

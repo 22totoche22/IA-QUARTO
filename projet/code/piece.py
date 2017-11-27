@@ -5,9 +5,6 @@ class Piece:
         self.charact = from_decimal(self.num,self.size)
         self.coord = ()
 
-        # TODO : rajouter un attribut self.num qui représente la valeur décimal des charactéristiques de la plèce
-        # TODO : OU inversement
-
     def __repr__(self):
         return str(self.charact)
 
