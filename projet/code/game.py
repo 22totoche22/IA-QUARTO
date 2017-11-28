@@ -19,7 +19,7 @@ class Cell_error(Exception):
     pass
         
 class Game:
-    
+
     def __init__(self, size):
         self.size = size
         self.board = [[[None for i in range(self.size)] for j in range(self.size)] for k in range(self.size)] #creates a 3D board
@@ -46,6 +46,9 @@ class Game:
             del self.coords[self.coords.index(coord)]
         except Exception:  # Error if the coordinates "coord" have already been choosen
                 print(Cell_error("this cell is already taken: Choose an other one"))
+                x = int(input("x coord = "))
+                y = int(input("y coord = "))
+                self.play_piece((x,y))
 
         for k in range(self.size):
                 self.board[x][y][k] = self.selected_piece.charact[k]
@@ -57,6 +60,8 @@ class Game:
             self.selected_piece = piece
         except Exception: #Error if self.bag[num_piece] doesn't exist anymore
             print(Bag_error("this piece has already been played: Choose an other one"))
+            i = int(input("Numéro de la pièce = "))
+            self.select_piece(i)
 
 
     def full_row(self,coord,n): #verifies if there is a full horizontal, vertical, or diagonal row of n pieces with the same characteristics after putting the piece at the coordinates(x,y) on the board
@@ -83,20 +88,18 @@ def row(list,n): #returns if there is a row of n '1' in a simple list
     compteur_0 = 0
     max_compteur_1 = 0
     max_compteur_0 = 0
-    for i in list:
-        if i == 1:
-            compteur_1 += 1
-            compteur_0 = 0
-            max_compteur_1 = max(compteur_1,max_compteur_1)
-            max_compteur_0 = 0
-        else:
-            compteur_1 = 0
-            compteur_0 += 1
-            max_compteur_0 = max(compteur_0,max_compteur_0)
-            max_compteur_1 = 0
-       
-            
-    
+    if None not in list:
+        for i in list:
+            if i == 1:
+                compteur_1 += 1
+                compteur_0 = 0
+                max_compteur_1 = max(compteur_1,max_compteur_1)
+                max_compteur_0 = 0
+            else:
+                compteur_1 = 0
+                compteur_0 += 1
+                max_compteur_0 = max(compteur_0,max_compteur_0)
+                max_compteur_1 = 0
     return max_compteur_1 == n or max_compteur_0 == n
 
 
@@ -110,16 +113,17 @@ def row_layer(layer,n,coord): #returns if there is a horizontal, vertical, or di
     victory = row(horizontal,n) or row(vertical,n) or row(diagonal_d,n) or row(diagonal_g,n)
     return victory
 
-jeu = Game(4)
-print(jeu.bag)
-print(jeu.board)
-jeu.select_piece(3)
-print(jeu.selected_piece)
-print(jeu.bag)
-jeu.play_piece((1,1))
-print(jeu.board)
-jeu.select_piece(3)
-jeu.select_piece(4)
-print(jeu.selected_piece)
-jeu.play_piece((1,1))
-print(jeu.board)
+
+# jeu = Game(4)
+# print(jeu.bag)
+# print(jeu.board)
+# jeu.select_piece(3)
+# print(jeu.selected_piece)
+# print(jeu.bag)
+# jeu.play_piece((1,1))
+# print(jeu.board)
+# jeu.select_piece(3)
+# jeu.select_piece(4)
+# print(jeu.selected_piece)
+# jeu.play_piece((1,1))
+# print(jeu.board)
