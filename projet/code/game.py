@@ -72,14 +72,7 @@ class Game:
         return True in victory
 
 
-def layer_tab(board, k):     #return the k layer of a 3D board
-    n = len(board)
-    if k < n:
-        layer = [[0 for _ in range(n)] for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                    layer[i][j] = board[i][j][k]
-        return np.array(layer)
+
 
 
 
@@ -88,30 +81,76 @@ def row(list,n): #returns if there is a row of n '1' in a simple list
     compteur_0 = 0
     max_compteur_1 = 0
     max_compteur_0 = 0
-    if None not in list:
-        for i in list:
-            if i == 1:
-                compteur_1 += 1
-                compteur_0 = 0
-                max_compteur_1 = max(compteur_1,max_compteur_1)
-                max_compteur_0 = 0
-            else:
-                compteur_1 = 0
-                compteur_0 += 1
-                max_compteur_0 = max(compteur_0,max_compteur_0)
-                max_compteur_1 = 0
+    for i in list:
+        if i == 1:
+            compteur_1 += 1
+            compteur_0 = 0
+            max_compteur_1 = max(compteur_1,max_compteur_1)
+            max_compteur_0 = 0
+        if i == 0:
+            compteur_1 = 0
+            compteur_0 += 1
+            max_compteur_0 = max(compteur_0,max_compteur_0)
+            max_compteur_1 = 0
     return max_compteur_1 == n or max_compteur_0 == n
 
 
-def row_layer(layer,n,coord): #returns if there is a horizontal, vertical, or diagonal row of n '1' with the point whose coordinates are (x,y) in the layer, coord is a tuple
+def layer_tab(board, k):     #return the k layer of a 3D board
+    n = len(board)
+    if k < n:
+        layer = [[0 for _ in range(n)] for _ in range(n)]
+        for i in range(n):
+            for j in range(n):
+                    layer[i][j] = board[i][j][k]
+        return layer
+
+
+
+def row_layer(layer,n,coord): #returns True if there is a full horizontal, vertical, or diagonal row of'1' or '0' with the point whose coordinates are (x,y) in the layer, coord is a tuple
     x,y = coord[0], coord[1]
     long = len(layer)
-    horizontal = layer[x]
-    vertical = np.transpose(layer)[y]
-    diagonal_d = np.diag(layer,y-x)
-    diagonal_g = np.diag(np.fliplr(layer),(long-y)-x)
-    victory = row(horizontal,n) or row(vertical,n) or row(diagonal_d,n) or row(diagonal_g,n)
+    horizontale = layer[x]
+    verticale = vertical(layer,(x,y))
+    diagonale = diagonal(layer,(x,y))
+    diagonale_t = diagonal_t(layer,(x,y))
+    victory = row(horizontale,long) or row(verticale,long) or row(diagonale,long) or row(diagonale_t,long)
     return victory
+
+ # def row_layer(layer,n,coord): #returns if there is a horizontal, vertical, or diagonal row of n '1' with the point whose coordinates are (x,y) in the layer, coord is a tuple
+ #     x,y = coord[0], coord[1]
+ #     long = len(layer)
+ #     horizontal = layer[x]
+ #     vertical = np.transpose(layer)[y]
+ #     diagonal_d = np.diag(layer,y-x)
+ #     diagonal_g = np.diag(np.fliplr(layer),(long-y)-x)
+ #     victory = row(horizontal,n) or row(vertical,n) or row(diagonal_d,n) or row(diagonal_g,n)
+ #      return victory
+
+
+def diagonal(tab,coord): #returns the diagonal of the table if the element is on the diagonal , coord is a tuple
+    diagonale = []
+    if coord[0] == coord[1]:
+        for i,j in enumerate(tab):
+            diagonale.append(j[i])
+    return diagonale
+
+def diagonal_t(tab,coord): #returns the other diagonal of the table(which is a square) if the element is on this diagonal , coord is a tuple
+    diagonale = []
+    n = len(tab)
+    if coord[0] == n-1 - coord[1]:
+        for i, j in enumerate(tab):
+            diagonale.append(j[n-1-i])
+    return diagonale
+
+def vertical(tab,coord): #returns the column where the element is of the table
+    verticale = []
+    for i in tab:
+        verticale.append(i[coord[1]])
+    return verticale
+
+
+
+
 
 
 # jeu = Game(4)
