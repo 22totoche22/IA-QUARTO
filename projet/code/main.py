@@ -10,6 +10,7 @@ if __name__ == "__main__":
 
     # Beginning of the game loop
     while not launched_game.end:
+        print("\n\n{:=^50}".format("Tour du joueur "+str(launched_game.current_player)))
         print("Sélectionnez la coordonnées où vous voulez placer la pièce ({}) : ".format(launched_game.selected_piece))
         print()
         print(launched_game)
@@ -29,5 +30,6 @@ if __name__ == "__main__":
 
         i = int(input("Numéro de la pièce = "))
         launched_game.select_piece(i)
+        launched_game.current_player *= -1
 
     print("QUARTO")

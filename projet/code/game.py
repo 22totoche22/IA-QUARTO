@@ -8,7 +8,7 @@ import piece
 
 
 PLAYER_A = 1
-PLAYER_B = 0
+PLAYER_B = -1
 SIZE = 4
 
 
@@ -27,11 +27,15 @@ class Game:
         self.bag = {}
         self.init_full_bag()
 
-        self.player = PLAYER_A
+        self.current_player = PLAYER_A
         self.selected_piece = None
         self.win = False
         self.end = False
-        self.coords = [(i,j) for i in range(self.size) for j in range(self.size)] #list of all possibles coordinates
+        self.coords = [(i,j) for i in range(self.size) for j in range(self.size)] # list of all possibles coordinates
+
+        # A list in order to store every action from each player
+        # An element is a tuple (coord, sel_piece) which represents
+        self.moves_played = [(None, self.selected_piece)]
 
 
     def init_full_bag(self):   #initializes the bag at the beginning of the game

@@ -1,3 +1,10 @@
-class Ia:
-    def __init__(self):
-        pass
+
+
+def minimax(self, n):
+    """
+
+    :param n: Profondeur maximale de l'arbre
+    :return:
+    """
+
+
