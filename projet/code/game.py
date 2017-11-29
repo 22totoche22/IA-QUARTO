@@ -10,7 +10,7 @@ from collections import deque
 
 PLAYER_A = 1
 PLAYER_B = -1
-SIZE = 4
+SIZE = 3
 
 # In order to print things in the console to help with debugging
 DEBUG = True
@@ -49,27 +49,26 @@ class Game:
 
     def play_piece(self,coord):
         x, y = coord[0], coord[1]
-        try :
-            coord = self.coords[self.coords.index(coord)]
-            del self.coords[self.coords.index(coord)]
-        except Exception:  # Error if the coordinates "coord" have already been choosen
-                print(Cell_error("this cell is already taken: Choose an other one"))
-                x = int(input("x coord = "))
-                y = int(input("y coord = "))
-                self.play_piece((x,y))
-
+        # try :
+        #     coord = self.coords[self.coords.index(coord)]
+        #     del self.coords[self.coords.index(coord)]
+        # except Exception:  # Error if the coordinates "coord" have already been choosen
+        #         print(Cell_error("this cell is already taken: Choose an other one"))
+        #         x = int(input("x coord = "))
+        #         y = int(input("y coord = "))
+        #         self.play_piece((x,y))
         for k in range(self.size):
                 self.board[x][y][k] = self.selected_piece.charact[k]
 
     def select_piece(self,num):
-        try:
-            piece = self.bag[num]
-            del self.bag[num]                             #removes the Piece from the bag
-            self.selected_piece = piece
-        except Exception: #Error if self.bag[num_piece] doesn't exist anymore
-            print(Bag_error("this piece has already been played: Choose an other one"))
-            i = int(input("Numéro de la pièce = "))
-            self.select_piece(i)
+        # try:
+        piece = self.bag[num]
+        del self.bag[num]                             #removes the Piece from the bag
+        self.selected_piece = piece
+        # except Exception: #Error if self.bag[num_piece] doesn't exist anymore
+        #     print(Bag_error("this piece has already been played: Choose an other one"))
+        #     i = int(input("Numéro de la pièce = "))
+        #     self.select_piece(i)
 
     def play_turn(self, coord, num):
         """
@@ -95,7 +94,7 @@ class Game:
         :return:
         """
         (coord, last_selected_piece) = self.turns_played.pop()
-        self.selected_piece = self.turns_played[-1][1]
+        self.selected_piece = piece.Piece(self.turns_played[-1][1], self.size)
         self.bag[last_selected_piece] = piece.Piece(last_selected_piece, self.size)
         self.board[coord[0]][coord[1]] = [None for _ in range(self.size)]
         self.current_player *= -1
