@@ -19,17 +19,19 @@ if __name__ == "__main__":
 
         # TODO : Verify if the user input is correct
 
-        launched_game.play_piece((x,y))
-        print(launched_game)
+        # launched_game.play_piece((x,y))
+        # print(launched_game)
+        #
+        # launched_game.end = launched_game.full_row((x,y),launched_game.size)
 
-        launched_game.end = launched_game.full_row((x,y),launched_game.size)
-
-        print("Sélectionnez la pièce")
+        print("Sélectionnez la pièce que jouera l'autre joueur ou tapez 'Quarto!' si vous pensez avoir gagné\n")
         for (index, el) in launched_game.bag.items():
             print(el)
-
+        # TODO: si le joueur ecrit quarto! vérifier qu'il a gagné
         i = int(input("Numéro de la pièce = "))
-        launched_game.select_piece(i)
-        launched_game.current_player *= -1
+        # launched_game.select_piece(i)
+        # launched_game.current_player *= -1
+
+        launched_game.play_turn((x, y), i)
 
     print("QUARTO")

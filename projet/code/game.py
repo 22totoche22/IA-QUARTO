@@ -4,12 +4,16 @@
 
 import numpy as np
 import piece
+from collections import deque
 
 
 
 PLAYER_A = 1
 PLAYER_B = -1
 SIZE = 4
+
+# In order to print things in the console to help with debugging
+DEBUG = True
 
 
 class Bag_error(Exception):
@@ -33,9 +37,9 @@ class Game:
         self.end = False
         self.coords = [(i,j) for i in range(self.size) for j in range(self.size)] # list of all possibles coordinates
 
-        # A list in order to store every action from each player
+        # A LIFO (last in first out) in order to store every action from each player
         # An element is a tuple (coord, sel_piece) which represents
-        self.moves_played = [(None, self.selected_piece)]
+        self.turns_played = deque([(None, self.selected_piece)])
 
 
     def init_full_bag(self):   #initializes the bag at the beginning of the game
@@ -66,6 +70,35 @@ class Game:
             print(Bag_error("this piece has already been played: Choose an other one"))
             i = int(input("Numéro de la pièce = "))
             self.select_piece(i)
+
+    def play_turn(self, coord, num):
+        """
+        Basic method to play a turn
+        :param coord: coordinate where the selected_piece will be placed
+        :param num: the representative number of the piece which will be selected for the other player
+        :return:
+        """
+        self.play_piece(coord)
+        self.select_piece(num)
+
+        self.win = self.full_row(coord, self.size)
+        # TODO: voir si le joueur à compris qu'il avait gagné et donc le jeu ne sera pas forcément finit dés qu'il y aura 4 pièces alignées
+        self.end = self.win
+
+        self.turns_played.append((coord, num))
+        self.current_player *= -1
+
+    def undo_turn(self):
+        """
+        Go back to the last game's state (from the other player)
+        Assumes that play_turn has already been called
+        :return:
+        """
+        (coord, last_selected_piece) = self.turns_played.pop()
+        self.selected_piece = self.turns_played[-1][1]
+        self.bag[last_selected_piece] = piece.Piece(last_selected_piece, self.size)
+        self.board[coord[0]][coord[1]] = [None for _ in range(self.size)]
+        self.current_player *= -1
 
 
     def full_row(self,coord,n): #verifies if there is a full horizontal, vertical, or diagonal row of n pieces with the same characteristics after putting the piece at the coordinates(x,y) on the board
