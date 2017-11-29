@@ -71,6 +71,24 @@ class Game:
             victory.append(row_layer(layer_i,n,coord))
         return True in victory
 
+    def __repr__(self):
+        """
+        Renvoi un affichage de l'état de jeu courant
+        :return: (String) res : représente l'état de jeu
+        """
+        res = ""
+        res += "Pièce sélectionnée par le joueur adverse : " + str(self.selected_piece) + "\n"*2
+
+        for i_layer in range(self.size):
+            # We go through all the layers
+            for y_board in range(self.size):
+                for x_board in range(self.size):
+                    res += "." if self.board[x_board][y_board][i_layer] is None else str(self.board[x_board][y_board][i_layer])
+                res += "\n"
+            res += "\n"*2
+        return res
+
+
 
 def layer_tab(board, k):     #return the k layer of a 3D board
     n = len(board)
