@@ -1,6 +1,6 @@
 #TODO: changer le nom de ce module ?
 
-SCORE_MAX = 1000000000 # 1 milliard représente l'infini, TODO: à changer
+SCORE_MAX = float("inf") # représente l'infini
 
 def minimax(game, depth):
     """
