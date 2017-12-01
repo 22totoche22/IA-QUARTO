@@ -33,6 +33,10 @@ class Game:
 
         self.current_player = PLAYER_A
         self.selected_piece = None
+        # On initialise avec la pièce 0 car le choix de la première piece et de son emplacement n'a que tres
+        # peu d'importance
+        self.select_piece(0)
+
         self.win = False
         self.end = False
         self.coords = [(i,j) for i in range(self.size) for j in range(self.size)] # list of all possibles coordinates
@@ -40,6 +44,20 @@ class Game:
         # A LIFO (last in first out) in order to store every action from each player
         # An element is a tuple (coord, sel_piece) which represents
         self.turns_played = deque([(None, self.selected_piece)])
+
+    def init_from_turns_played(self, list_of_turns):
+        """
+        Init the board from a list of turns played by different players
+        :param list_of_turns: list
+        :return:
+        """
+        # A rajouter si on change l'init juste au dessus (la pièce 0 est selectionnée de base)
+        # self.select_piece(list_of_turns[0][1])
+        for i in range(1, len(list_of_turns)):
+            x = list_of_turns[i][0][0]
+            y = list_of_turns[i][0][1]
+            self.play_piece((x, y))
+            self.select_piece(list_of_turns[i][1])
 
 
     def init_full_bag(self):   #initializes the bag at the beginning of the game
@@ -123,11 +141,6 @@ class Game:
                 res += "\n"
             res += "\n"*2
         return res
-
-
-
-
-
 
 
 def row(list,n): #returns if there is a row of n '1' in a simple list

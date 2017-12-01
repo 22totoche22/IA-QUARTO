@@ -4,11 +4,9 @@ import ia
 
 if __name__ == "__main__":
     launched_game = game.Game(game.SIZE)
-
-    # Select a basic piece in order to play the first move
-    launched_game.select_piece(0)
-
-
+    print("1")
+    launched_game.init_from_turns_played([[None, 0], [(0,0), 1], [(2,2), 2]])
+    print("2")
     ## DEBUT MAIN AVEC IA
     #
     while not launched_game.end:
@@ -34,10 +32,11 @@ if __name__ == "__main__":
         else:
             print("\n\n{:=^50}".format(" Tour de Charles-Maurice "))
 
-            (coord, num_piece) = ia.minimax(launched_game, 2)
-            print("lol")
+            # TODO: augmenter la profondeur lorsqu'on arrive vers une grille plus remplie
+            (coord, num_piece) = ia.minimax(launched_game, 3)
             print(coord, num_piece)
             launched_game.play_turn(coord, num_piece)
+        print(launched_game.turns_played)
 
 
     # Beginning of the game loop

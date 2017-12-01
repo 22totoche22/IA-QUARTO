@@ -47,9 +47,9 @@ def val_min(game, depth):
 
 def val_max(game, depth):
     if game.win:
-        return SCORE_MAX
+        return -SCORE_MAX
 
-    # TODO: àà voir pour le game.end
+    # TODO: à voir pour le game.end
     if game.end or depth == 0:
         return eval(game)
 
