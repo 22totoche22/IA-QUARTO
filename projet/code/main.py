@@ -1,7 +1,11 @@
-import ui_projet
-import game
-import ia
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
 
+import time
+import game
+import Ia
+
+t1 = time.time()
 if __name__ == "__main__":
     launched_game = game.Game(game.SIZE)
     print("1")
@@ -33,9 +37,11 @@ if __name__ == "__main__":
             print("\n\n{:=^50}".format(" Tour de Charles-Maurice "))
 
             # TODO: augmenter la profondeur lorsqu'on arrive vers une grille plus remplie
-            (coord, num_piece) = ia.minimax(launched_game, 3)
+            (coord, num_piece) = Ia.alphabeta(launched_game, 1, -float("inf"), float("inf"))
             print(coord, num_piece)
+            
             launched_game.play_turn(coord, num_piece)
+            print((time.time())-t1)
         print(launched_game.turns_played)
 
 
@@ -66,3 +72,4 @@ if __name__ == "__main__":
     #     launched_game.play_turn((x, y), i)
 
     print("QUARTO")
+
