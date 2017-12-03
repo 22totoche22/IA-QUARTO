@@ -1,0 +1,77 @@
+Idée pour la fonction d'évaluation :
+
+***
+
+nommée dans la suite eval.
+
+***
+
+eval est une fonction qui prend en paramètre un état de jeu i.e. un plateau B avec ses
+pièces et une pièce à côté (celle donnée au joueur) P. Elle revoie un réel :
+eval((B, P)) = float
+
+***
+
+Pour un jeu comme le morpion, le puissance 4 etc (ceux présentés dans les bouquins d'info 
+quand ils parlent de l'algo minmax), plus la valeur prise par eval est grande, plus 
+l'état de jeu est favorable à l'IA (plus la valeur est petite, plus le jeu est à 
+l'avantage du joueur humain). Cette comparaison des valeurs prises par eval est possible
+dans ce genre de jeu car les pièces sont discriminées selon leur appartenance au joueur.
+
+Cependant dans notre cas, les pièces appartiennent à tout le monde donc il n'est pas
+possible d'attribuer un nombre à un état de jeu , grand s'il avantage l'IA, petit s'il 
+avantage le joueur.
+La solution que je propose est la suivante :
+eval est à valeur dans R+, et plus eval((B,P)) est grand, plus l'état de jeu (B,P) est
+proche d'un Quarto (à l'avantage de l'un ou l'autre joueur, peu importe). Basiquement,
+eval d'un état avec des alignements partiels de 2 pièces vaut moins que eval d'un 
+état avec des alignements partiels de 3 pièces par exemple.
+Ainsi dans la fonction val_min, on renvoie eval(état) alors que dans la fonction 
+val_max, on renvoie -eval(état). On retrouve la généralité de la fonction d'évaluation
+évoquée plus haut, dans les jeux plus basiques. Remarquons d'ailleurs que cette astuce
+à déjà été faite : en effet on a déjà codé la fonction d'évaluation dans le cas où un 
+joueur gagne (feuille de l'arbre) et on renvoie alors VAL_MAX ou -VAL-MAX. Autrement dit,
+eval(état, IA gagne) = VAL_MAX et eval(etat, J gagne) = - VAL_MAX, ce qui est attendu.
+
+En conclusion, eval(état) = float > 0 ; plus eval est grand, plus état proche d'un Quarto.
+
+***
+
+Voici quelques idées pour réaliser cette heuristique (car c'en est une) :
+D'abord, j'ai pas trouvé grand chose à la BU Science. Des généralités sur minmax et ses
+variantes (chap 1 de bouquins d'IA de 900 pages...), encore moins sur la fonction d'évaluation.
+Sur internet, pas facile car il est toujours question des jeu "simple" comme le morpion.
+Dans ce cas, il est préconisé dans un premier temps de compter les alignements potentiels
+de l'IA et de retrancher ceux du joueur... mais on peut pas faire cela pour le Quarto 
+(cf plus haut). 
+
+Selon moi, une première idée serait de compter le nombre d'alignements susceptibles 
+d'aboutir à un Quarto et de les pondérer en fonction de leur importance.
+Un tel alignement (dont il faudrait leur trouver un nom générique)est un alignement de 
+1, 2 ou 3 pièces présentant au moins une caractéristique commune mais dont les,
+respectivement, 3, 2, 1 cases restante·s de la ligne sont vides... On peut pondérer
+cela par des coefficients (grands pour des alignements de trois, petits pour une seule
+pièces ; grand si les pièces alignés présentes 2 caractéristiques, petits si une seule)
+Ainsi eval = a_1*f_1 + ... a_N*f_N où les a_i sont des coefficients de pondérations
+et les f_i des fonctions qui prennent en para un état de jeu et renvoie son évaluation 
+quant à un seul critère. (ex : f_i(état) renvoie le nombre de i-alignements définis plus
+haut et alors a_1 < a_2 < a_3 ).
+Une limite évidente de ce genre de partition de éval en combinaison linéaire de sous-fonction
+d'évaluation est l'hypothèse que les critères ne s'influencent pas entre eux... (faux : il est évident
+que le nombre de 3-alignements de pièces à 2 caractéristiques communes va influencer le
+nombre de 1-alignements). 
+Mais dans un premier temps, on a de quoi faire avec cela !
+Terminons en développant cette idée : la fonction éval va évoluant tout le long du
+développement, donc on peut faire simple au début et la compléxifier par la suite. Inutile
+de chercher compliqué au début. On l'améliore au fur et à mesure... (méthode agile)
+
+Résumé : eval = a_1*f_1 + ... a_N*f_N où f_i : état --> float > 0, et a_i float > 0
+Dans un premier temps, compter le nombre d'alignements.
+
+***
+
+D'autres idées pour améliorer eval :
+[...]
+ 
+   
+
