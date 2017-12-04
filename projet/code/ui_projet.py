@@ -128,6 +128,9 @@ class Ui_MainWindow(object):
                         self.tableWidget.item(row,col).setFlags(QtCore.Qt.ItemIsEnabled)
                         self.listWidget.takeItem(self.listWidget.currentRow())
                         self.listWidget.clearSelection()
+                        self.tableWidget.clearSelection()
+                        self.lineEdit.clear()
+                        self.lineEdit_2.clear()
 
 
 
