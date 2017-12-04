@@ -86,6 +86,7 @@ class Ui_MainWindow(object):
 
         #ajout des items dans le sac
         self.listWidget.addItems([str(d[i]) for i in range(len(d))])
+        self.listWidget.addItems([None]) #probleme sinon dans le cas ou la liste est vide
 
         #tailel du bag
         self.listWidget.setMaximumWidth(100)
@@ -241,14 +242,12 @@ class Ui_MainWindow(object):
                 self.lineEdit.clear()
                 self.lineEdit_2.clear()
             long = len(self.listWidget)
-            print(long)
             if long %2 ==0:
                 self.label_6.setStyleSheet("font : bold 12px")
                 self.label_5.setStyleSheet("")
             else :
                 self.label_6.setStyleSheet("")
                 self.label_5.setStyleSheet("font : bold 12px")
-
 
 
     def ecrit_piece(self):
@@ -270,7 +269,6 @@ class Ui_MainWindow(object):
         self.label_3.setText(_translate("MainWindow", "Coordonéés:"))
         self.label_6.setText(_translate("MainWindow", "Player A"))
         self.label_5.setText(_translate("MainWindow", "Player B"))
-
         self.pushButton.setText(_translate("MainWindow", "\"Quarto\""))
         self.pushButton.setStyleSheet("font : bold 12px")
 
