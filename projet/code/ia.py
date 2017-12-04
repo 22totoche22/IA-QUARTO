@@ -5,7 +5,18 @@
 
 import time
 SCORE_MAX = float("inf") # représente l'infini
+DEBUG = False
 
+########## Fonction d'évaluation ##########
+#
+def eval(game):
+    return 0
+#
+########## MINIMAX ##########
+
+
+########## MINIMAX ##########
+#
 def minimax(game, depth):
     """
 
@@ -21,9 +32,11 @@ def minimax(game, depth):
                 for (num_piece, char_piece) in game.bag.items():
                     game.play_turn((x, y), num_piece)
                     val_child = val_min(game, depth)
+                    if DEBUG:
+                        print("pour la coord {} {} la caractéristique {}, valchild = {}".format(x, y, num_piece, val_child))
                     game.undo_turn()
 
-                    if val_child > best_score_yet:
+                    if val_child >= best_score_yet: # J'ai (raph) mis un égal ici pour qu'il y ait au moins un coup à jouer
                         best_score_yet = val_child
                         turn = ((x, y), num_piece)
     return turn
@@ -67,17 +80,12 @@ def val_max(game, depth):
                     vmax = max(vmax, val_child)
                     game.undo_turn()
     return vmax
+#
+########## FIN DU MINIMAX ##########
 
-def eval(game):
-    return 0
-
-
-
-
-
+########## ALPHA BETA ##########
+#
 def alphabeta(game, depth, alpha, beta):
-    
-    
     best_score_yet = -SCORE_MAX # Pour l'instant le meilleur score est la valeur minimale
     turn = ()
 
@@ -93,11 +101,6 @@ def alphabeta(game, depth, alpha, beta):
                         best_score_yet = val_child
                         turn = ((x, y), num_piece)
     return turn
-    
-            
-            
-        
-    
     
 
 def val_min_AB(game, depth, alpha, beta):

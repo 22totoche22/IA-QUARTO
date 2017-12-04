@@ -43,7 +43,7 @@ class Game:
 
         # A LIFO (last in first out) in order to store every action from each player
         # An element is a tuple (coord, sel_piece) which represents
-        self.turns_played = deque([(None, self.selected_piece)])
+        self.turns_played = deque([(None, self.selected_piece.num)])
 
     def init_from_turns_played(self, list_of_turns):
         """

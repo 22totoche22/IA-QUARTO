@@ -1,16 +1,11 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-
 import time
 import game
-import Ia
+import ia
 
 t1 = time.time()
 if __name__ == "__main__":
     launched_game = game.Game(game.SIZE)
-    print("1")
-    launched_game.init_from_turns_played([[None, 0], [(0,0), 1], [(2,2), 2]])
-    print("2")
+    # launched_game.init_from_turns_played([[None, 0], [(0,0), 1], [(2,2), 2]])
     ## DEBUT MAIN AVEC IA
     #
     while not launched_game.end:
@@ -29,20 +24,22 @@ if __name__ == "__main__":
                 print(el)
             # TODO: si le joueur ecrit quarto! vérifier qu'il a gagné
             i = int(input("Numéro de la pièce = "))
-            # launched_game.select_piece(i)
-            # launched_game.current_player *= -1
 
             launched_game.play_turn((x, y), i)
         else:
             print("\n\n{:=^50}".format(" Tour de Charles-Maurice "))
 
             # TODO: augmenter la profondeur lorsqu'on arrive vers une grille plus remplie
-            (coord, num_piece) = Ia.alphabeta(launched_game, 1, -float("inf"), float("inf"))
+            # (coord, num_piece) = ia.alphabeta(launched_game, 3, -float("inf"), float("inf"))
+            (coord, num_piece) = ia.minimax(launched_game, 3)
             print(coord, num_piece)
             
             launched_game.play_turn(coord, num_piece)
-            print((time.time())-t1)
+
+            print(time.time()-t1)
+
         print(launched_game.turns_played)
+        print(launched_game)
 
 
     # Beginning of the game loop
