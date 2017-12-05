@@ -29,16 +29,25 @@ def minimax(game, depth):
     for x in range(game.size):
         for y in range(game.size):
             if game.board[x][y][0] is None:
-                for (num_piece, char_piece) in game.bag.items():
-                    game.play_turn((x, y), num_piece)
-                    val_child = val_min(game, depth)
-                    if DEBUG:
-                        print("pour la coord {} {} la caractéristique {}, valchild = {}".format(x, y, num_piece, val_child))
-                    game.undo_turn()
+                if game.bag != {}:  # traite le cas si le sac est vide : on est à la fin du jeu : l'IA ne peut pas choisir de pièce pour le joueur
+                    for (num_piece, char_piece) in game.bag.items():
+                        game.play_turn((x, y), num_piece)
+                        val_child = val_min(game, depth)
+                        if DEBUG:
+                            print("pour la coord {} {} la caractéristique {}, valchild = {}".format(x, y, num_piece, val_child))
+                        game.undo_turn()
 
-                    if val_child >= best_score_yet: # J'ai (raph) mis un égal ici pour qu'il y ait au moins un coup à jouer
+                        if val_child >= best_score_yet: # J'ai (raph) mis un égal ici pour qu'il y ait au moins un coup à jouer
+                            best_score_yet = val_child
+                            turn = ((x, y), num_piece)
+                else: # l'IA ne fait que poser la pièce sans en proposer une au joueur
+                    game.play_piece((x,y))
+                    game.selected_piece = None
+                    val_child = val_min(game, depth)
+                    game.undo_turn()
+                    if val_child >= best_score_yet:
                         best_score_yet = val_child
-                        turn = ((x, y), num_piece)
+                        turn = ((x,y), None)
     return turn
 
 def val_min(game, depth):
@@ -54,11 +63,19 @@ def val_min(game, depth):
     for x in range(game.size):
         for y in range(game.size):
             if game.board[x][y][0] is None:
-                for (num_piece, char_piece) in game.bag.items():
-                    game.play_turn((x, y), num_piece)
+                if game.bag != {}: # traite la fin d'une partie, qd y a plus de pièce dans le sac
+                    for (num_piece, char_piece) in game.bag.items():
+                        game.play_turn((x, y), num_piece)
+                        val_child = val_max(game, depth - 1)
+                        vmin = min(vmin, val_child)
+                        game.undo_turn()
+                else :
+                    game.play_piece((x,y))
+                    game.selected_piece = None
                     val_child = val_max(game, depth - 1)
                     vmin = min(vmin, val_child)
                     game.undo_turn()
+                    
     return vmin
 
 
@@ -74,11 +91,21 @@ def val_max(game, depth):
     for x in range(game.size):
         for y in range(game.size):
             if game.board[x][y][0] is None:
-                for (num_piece, char_piece) in game.bag.items():
-                    game.play_turn((x, y), num_piece)
+                if game.bag != {}: # traite la fin d'une partie, qd y a plus de pièce dans le sac
+                    for (num_piece, char_piece) in game.bag.items():
+                        game.play_turn((x, y), num_piece)
+                        val_child = val_min(game, depth - 1)
+                        vmax = max(vmax, val_child)
+                        game.undo_turn()
+                else :
+                    game.play_piece((x,y))
+                    game.selected_piece = None
                     val_child = val_min(game, depth - 1)
                     vmax = max(vmax, val_child)
                     game.undo_turn()
+                    # TODO : code à factoriser car répétitions
+            
+          
     return vmax
 #
 ########## FIN DU MINIMAX ##########
