@@ -69,12 +69,17 @@ def val_min(game, depth):
                         val_child = val_max(game, depth - 1)
                         vmin = min(vmin, val_child)
                         game.undo_turn()
+                        #v = vmin
+                        #vmin = val_game_node((x,y), num_piece, val_max, min)
+                        
                 else :
                     game.play_piece((x,y))
                     game.selected_piece = None
                     val_child = val_max(game, depth - 1)
                     vmin = min(vmin, val_child)
                     game.undo_turn()
+                    #v = vmin
+                    #vmin = val_game_leaf((x,y), val_max, min)
                     
     return vmin
 
@@ -97,16 +102,34 @@ def val_max(game, depth):
                         val_child = val_min(game, depth - 1)
                         vmax = max(vmax, val_child)
                         game.undo_turn()
+                        #v = vmax
+                        #vmax = val_game_node((x,y), num_piece, val_min, max)
+                        
                 else :
                     game.play_piece((x,y))
                     game.selected_piece = None
                     val_child = val_min(game, depth - 1)
                     vmax = max(vmax, val_child)
                     game.undo_turn()
+                    #v = vmax
+                    #vmax = val_game_leaf((x,y), val_min, max)
                     # TODO : code à factoriser car répétitions
             
           
     return vmax
+    
+def val_game_node(coord, num_piece, f, g): 
+    game.play_turn(coord, num_piece)
+    val_child = f(game, depth - 1)
+    game.undo_turn()
+    return g(v, val_child)
+    
+def val_game_leaf(coord, f, g):
+    game.play_piece(coord)
+    game.selected_piece = None
+    val_child = f(game, depth - 1)
+    game.undo_turn()
+    return g(v, val_child)
 #
 ########## FIN DU MINIMAX ##########
 
