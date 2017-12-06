@@ -5,7 +5,7 @@ import ia
 t1 = time.time()
 if __name__ == "__main__":
     launched_game = game.Game(game.SIZE)
-    # launched_game.init_from_turns_played([[None, 0], [(0,0), 1], [(2,2), 2]])
+    launched_game.init_from_turns_played([(None, 0), ((2, 2), 6), ((2, 1), 5), ((2, 0), 1), ((1, 2), 7)])
     ## DEBUT MAIN AVEC IA
     #
     while not launched_game.end:
