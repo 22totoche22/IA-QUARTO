@@ -41,8 +41,14 @@ def minimax(game, depth):
                             best_score_yet = val_child
                             turn = ((x, y), num_piece)
                 else: # l'IA ne fait que poser la pièce sans en proposer une au joueur
+                    print(game.selected_piece)
+                    print(game)
+                    print(game.bag)
                     game.play_piece((x,y))
                     game.selected_piece = None
+                    game.turns_played.append(((x, y), None))
+                    game.win = game.full_row((x,y), game.size)
+                    game.end = game.win
                     val_child = val_min(game, depth)
                     game.undo_turn()
                     if val_child >= best_score_yet:
@@ -73,10 +79,17 @@ def val_min(game, depth):
                         #vmin = val_game_node((x,y), num_piece, val_max, min)
                         
                 else :
+                    print(game.selected_piece)
+                    print(game)
+                    print(game.bag)
                     game.play_piece((x,y))
+                    game.turns_played.append(((x,y), None))
                     game.selected_piece = None
+                    game.win = game.full_row((x, y), game.size)
+                    game.end = game.win
                     val_child = val_max(game, depth - 1)
                     vmin = min(vmin, val_child)
+
                     game.undo_turn()
                     #v = vmin
                     #vmin = val_game_leaf((x,y), val_max, min)
@@ -106,8 +119,14 @@ def val_max(game, depth):
                         #vmax = val_game_node((x,y), num_piece, val_min, max)
                         
                 else :
+                    print(game.selected_piece)
+                    print(game)
+                    print(game.bag)
                     game.play_piece((x,y))
+                    game.turns_played.append(((x, y), None))
                     game.selected_piece = None
+                    game.win = game.full_row((x, y), game.size)
+                    game.end = game.win
                     val_child = val_min(game, depth - 1)
                     vmax = max(vmax, val_child)
                     game.undo_turn()
