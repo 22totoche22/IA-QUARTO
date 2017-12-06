@@ -56,8 +56,7 @@ class Game:
         for i in range(1, len(list_of_turns)):
             x = list_of_turns[i][0][0]
             y = list_of_turns[i][0][1]
-            self.play_piece((x, y))
-            self.select_piece(list_of_turns[i][1])
+            self.play_turn((x, y), list_of_turns[i][1])
 
 
     def init_full_bag(self):   #initializes the bag at the beginning of the game
@@ -78,6 +77,12 @@ class Game:
         for k in range(self.size):
                 self.board[x][y][k] = self.selected_piece.charact[k]
 
+        # update the "win" state of the game
+        self.win = self.full_row((x, y), self.size)
+
+        # Update the "end state of the game
+        self.end = self.win or self.is_board_filled()
+
     def select_piece(self,num):
         # try:
         piece = self.bag[num]
@@ -96,7 +101,11 @@ class Game:
         :return:
         """
         self.play_piece(coord)
-        self.select_piece(num)
+
+        if num is None:
+            self.selected_piece = None
+        else:
+            self.select_piece(num)
 
         self.win = self.full_row(coord, self.size)
         # TODO: voir si le joueur à compris qu'il avait gagné et donc le jeu ne sera pas forcément finit dés qu'il y aura 4 pièces alignées
@@ -113,7 +122,8 @@ class Game:
         """
         (coord, last_selected_piece) = self.turns_played.pop()
         self.selected_piece = piece.Piece(self.turns_played[-1][1], self.size)
-        self.bag[last_selected_piece] = piece.Piece(last_selected_piece, self.size)
+        if last_selected_piece is not None:
+            self.bag[last_selected_piece] = piece.Piece(last_selected_piece, self.size)
         self.board[coord[0]][coord[1]] = [None for _ in range(self.size)]
         self.current_player *= -1
 
@@ -125,6 +135,19 @@ class Game:
             victory.append(row_layer(layer_i,n,coord))
         return True in victory
 
+    def is_board_filled(self):
+        """
+        Verifies if all the position of the board are occupied by a piece
+        :return: boolean
+        """
+        # we assume it is filled
+        no_piece = [None for _ in range(self.size)]
+        for line in self.board:
+            # if it sees an empty place, the board is not filled
+            if no_piece in line:
+                return False
+        return True
+
     def __repr__(self):
         """
         Renvoi un affichage de l'état de jeu courant
@@ -133,13 +156,20 @@ class Game:
         res = ""
         res += "Pièce sélectionnée par le joueur adverse : " + str(self.selected_piece) + "\n"*2
 
-        for i_layer in range(self.size):
-            # We go through all the layers
-            for y_board in range(self.size):
+        for y_board in range(self.size):
+            for i_layer in range(self.size):
                 for x_board in range(self.size):
                     res += "." if self.board[x_board][y_board][i_layer] is None else str(self.board[x_board][y_board][i_layer])
-                res += "\n"
-            res += "\n"*2
+                res += "\t"*2
+            res += "\n"
+
+        res += "\n"
+
+        res += "pièces restantes dans le sac : \n"
+
+        for p in self.bag.values():
+            res += str(p) + "\n"
+
         return res
 
 

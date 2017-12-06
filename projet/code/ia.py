@@ -41,19 +41,7 @@ def minimax(game, depth):
                             best_score_yet = val_child
                             turn = ((x, y), num_piece)
                 else: # l'IA ne fait que poser la pièce sans en proposer une au joueur
-                    print(game.selected_piece)
-                    print(game)
-                    print(game.bag)
-                    game.play_piece((x,y))
-                    game.selected_piece = None
-                    game.turns_played.append(((x, y), None))
-                    game.win = game.full_row((x,y), game.size)
-                    game.end = game.win
-                    val_child = val_min(game, depth)
-                    game.undo_turn()
-                    if val_child >= best_score_yet:
-                        best_score_yet = val_child
-                        turn = ((x,y), None)
+                    return minimax_values_last_piece(game, (x, y))
     return turn
 
 def val_min(game, depth):
@@ -78,21 +66,8 @@ def val_min(game, depth):
                         #v = vmin
                         #vmin = val_game_node((x,y), num_piece, val_max, min)
                         
-                else :
-                    print(game.selected_piece)
-                    print(game)
-                    print(game.bag)
-                    game.play_piece((x,y))
-                    game.turns_played.append(((x,y), None))
-                    game.selected_piece = None
-                    game.win = game.full_row((x, y), game.size)
-                    game.end = game.win
-                    val_child = val_max(game, depth - 1)
-                    vmin = min(vmin, val_child)
-
-                    game.undo_turn()
-                    #v = vmin
-                    #vmin = val_game_leaf((x,y), val_max, min)
+                else:
+                    return minimax_values_last_piece(game, (x, y))
                     
     return vmin
 
@@ -118,25 +93,33 @@ def val_max(game, depth):
                         #v = vmax
                         #vmax = val_game_node((x,y), num_piece, val_min, max)
                         
-                else :
-                    print(game.selected_piece)
-                    print(game)
-                    print(game.bag)
-                    game.play_piece((x,y))
-                    game.turns_played.append(((x, y), None))
-                    game.selected_piece = None
-                    game.win = game.full_row((x, y), game.size)
-                    game.end = game.win
-                    val_child = val_min(game, depth - 1)
-                    vmax = max(vmax, val_child)
-                    game.undo_turn()
-                    #v = vmax
-                    #vmax = val_game_leaf((x,y), val_min, max)
-                    # TODO : code à factoriser car répétitions
-            
-          
+                else:
+                    return -minimax_values_last_piece(game, (x, y))
     return vmax
-    
+
+def minimax_values_last_piece(game, coord):
+    res = SCORE_MAX
+
+    # game.play_piece(coord)
+    # game.turns_played.append((coord, None))
+    # game.select
+
+    game.play_turn(coord, None)
+
+    # Comme c'est la dernière pièce, pas besoin d'appeler ni
+    # val_min ni val_max, il faut juste vérifier si il y a un alignement
+    if game.win:
+        res = SCORE_MAX
+    else: # S'il n'y a pas dalignement, alors forcément on arrive sur un match nul
+        # en effet, on vient de poser la dernière pièce sur la dernière case
+        # disponible du plateau de jeu
+        res = 0
+
+    game.undo_turn()
+
+    return res
+
+
 def val_game_node(coord, num_piece, f, g): 
     game.play_turn(coord, num_piece)
     val_child = f(game, depth - 1)
