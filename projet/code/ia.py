@@ -9,8 +9,36 @@ DEBUG = False
 
 ########## Fonction d'évaluation ##########
 #
-def eval(game):
-    return 0
+def eval_line(L, n):
+    """Param : une liste L, la taille du jeu n
+    renvoie la valeur d'un pseudo alignement (1,2,ou3) sur la ligne L"""
+    C=0
+    C_N=0
+    for elem in L:
+        if elem == None:
+            C_N += 1
+        else:
+            C += elem
+    if C_N + C == n or C ==0:
+        res = n-C_N
+    else:
+        res = 0
+    return res
+
+#print(eval_line([1,None,None,None],4))
+
+def eval(game): #applique la fonction eval_line sur chaque ligne du jeu + les diagonales.
+    evaluation = 0
+    board = game.board
+    for k in range(game.size):
+        for i in range(game.size):
+            line1 = [board[i][l][k] for l in range(game.size)]
+            line2 = [board[l][i][k] for l in range(game.size)]
+        line3 = [board[l][l][k] for l in range(game.size)]
+        line4 = [board[l][game.size-1-l][k] for l in range(game.size)]
+        evaluation = eval_line(line1, game.size)+eval_line(line2, game.size)+eval_line(line3, game.size)+eval_line(line4,game.size)
+    return evaluation
+
 #
 ########## MINIMAX ##########
 
@@ -48,7 +76,7 @@ def val_min(game, depth):
     if game.win:
         return SCORE_MAX
 
-    #TODO: àà voir pour le game.end
+    #TODO: à voir pour le game.end
     if game.end or depth == 0:
         return eval(game)
 
@@ -63,8 +91,7 @@ def val_min(game, depth):
                         val_child = val_max(game, depth - 1)
                         vmin = min(vmin, val_child)
                         game.undo_turn()
-                        #v = vmin
-                        #vmin = val_game_node((x,y), num_piece, val_max, min)
+
                         
                 else:
                     return minimax_values_last_piece(game, (x, y))
@@ -78,7 +105,7 @@ def val_max(game, depth):
 
     # TODO: à voir pour le game.end
     if game.end or depth == 0:
-        return eval(game)
+        return -eval(game)
 
     vmax = -SCORE_MAX
     for x in range(game.size):
@@ -90,8 +117,6 @@ def val_max(game, depth):
                         val_child = val_min(game, depth - 1)
                         vmax = max(vmax, val_child)
                         game.undo_turn()
-                        #v = vmax
-                        #vmax = val_game_node((x,y), num_piece, val_min, max)
                         
                 else:
                     return -minimax_values_last_piece(game, (x, y))
@@ -120,18 +145,7 @@ def minimax_values_last_piece(game, coord):
     return res
 
 
-def val_game_node(coord, num_piece, f, g): 
-    game.play_turn(coord, num_piece)
-    val_child = f(game, depth - 1)
-    game.undo_turn()
-    return g(v, val_child)
-    
-def val_game_leaf(coord, f, g):
-    game.play_piece(coord)
-    game.selected_piece = None
-    val_child = f(game, depth - 1)
-    game.undo_turn()
-    return g(v, val_child)
+
 #
 ########## FIN DU MINIMAX ##########
 
