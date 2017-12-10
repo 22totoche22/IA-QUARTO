@@ -38,8 +38,10 @@ if __name__ == "__main__":
 
             print(time.time()-t1)
 
-        print(launched_game.turns_played)
-        print(launched_game)
+    print("{:#^50}".format("!!!!!!! QUARTOOOOO !!!!!"))
+    print("#"*20 + "FIN DU JEU" + "#"*20)
+    print(launched_game.turns_played)
+    print(launched_game)
 
 
     # Beginning of the game loop
