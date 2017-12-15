@@ -39,88 +39,9 @@ def eval(game): #applique la fonction eval_line sur chaque ligne du jeu + les di
         evaluation = eval_line(line1, game.size)+eval_line(line2, game.size)+eval_line(line3, game.size)+eval_line(line4,game.size)
     return evaluation
 
+
+########### Fonction pour quand le tableau est presque rempli ###########
 #
-########## MINIMAX ##########
-
-
-########## MINIMAX ##########
-#
-def minimax(game, depth):
-    """
-
-    :param n: Profondeur maximale de l'arbre
-    :return: Retourne e score de l'état de jeu "game"
-    """
-    best_score_yet = -SCORE_MAX # Pour l'instant le meilleur score est la valeur minimale
-    turn = ()
-
-    for x in range(game.size):
-        for y in range(game.size):
-            if game.board[x][y][0] is None:
-                if game.bag != {}:  # traite le cas si le sac est vide : on est à la fin du jeu : l'IA ne peut pas choisir de pièce pour le joueur
-                    for (num_piece, char_piece) in game.bag.items():
-                        game.play_turn((x, y), num_piece)
-                        val_child = val_min(game, depth)
-                        if DEBUG:
-                            print("pour la coord {} {} la caractéristique {}, valchild = {}".format(x, y, num_piece, val_child))
-                        game.undo_turn()
-
-                        if val_child >= best_score_yet: # J'ai (raph) mis un égal ici pour qu'il y ait au moins un coup à jouer
-                            best_score_yet = val_child
-                            turn = ((x, y), num_piece)
-                else: # l'IA ne fait que poser la pièce sans en proposer une au joueur
-                    return ((x, y), None)
-    return turn
-
-def val_min(game, depth):
-    if game.win:
-        return SCORE_MAX
-
-    #TODO: à voir pour le game.end
-    if game.end or depth == 0:
-        return eval(game)
-
-
-    vmin = SCORE_MAX
-    for x in range(game.size):
-        for y in range(game.size):
-            if game.board[x][y][0] is None:
-                if game.bag != {}: # traite la fin d'une partie, qd y a plus de pièce dans le sac
-                    for (num_piece, char_piece) in game.bag.items():
-                        game.play_turn((x, y), num_piece)
-                        val_child = val_max(game, depth - 1)
-                        vmin = min(vmin, val_child)
-                        game.undo_turn()
-
-                        
-                else:
-                    return minimax_values_last_piece(game, (x, y))
-                    
-    return vmin
-
-
-def val_max(game, depth):
-    if game.win:
-        return -SCORE_MAX
-
-    # TODO: à voir pour le game.end
-    if game.end or depth == 0:
-        return -eval(game)
-
-    vmax = -SCORE_MAX
-    for x in range(game.size):
-        for y in range(game.size):
-            if game.board[x][y][0] is None:
-                if game.bag != {}: # traite la fin d'une partie, qd y a plus de pièce dans le sac
-                    for (num_piece, char_piece) in game.bag.items():
-                        game.play_turn((x, y), num_piece)
-                        val_child = val_min(game, depth - 1)
-                        vmax = max(vmax, val_child)
-                        game.undo_turn()
-                        
-                else:
-                    return -minimax_values_last_piece(game, (x, y))
-    return vmax
 
 def minimax_values_last_piece(game, coord):
     res = SCORE_MAX
@@ -143,77 +64,325 @@ def minimax_values_last_piece(game, coord):
     game.undo_turn()
 
     return res
+##########################################################################
 
-
-
+########## MINIMAX ##########
 #
-########## FIN DU MINIMAX ##########
+def minimax(game, depth, player=1):
+    """
+    :param:
+     - game : a game state
+     - depth : where to stop in the tree of possibilities
+     - player : 1 = max        -1 = min
+    :return: Retourne e score de l'état de jeu "game"
+    """
+
+    if game.win:
+        return (None, -1 * player * SCORE_MAX)
+
+        # TODO: à voir pour le game.end
+    if game.end or depth == 0:
+        return (None, -1 * player * eval(game))
+
+    # best_score_yet = -1 * player * SCORE_MAX
+
+    turn = ()
+    # Si on est dans un noeud max
+    if player == 1:
+        # On itnitialise le meilleur score pour linstant
+        vmax = -SCORE_MAX
+        #On parcourt toutes les possibilités
+        for x in range(game.size):
+            for y in range(game.size):
+                if game.board[x][y][0] is None:
+                    if game.bag != {}:
+                        for (num_piece, char_piece) in game.bag.items():
+                            game.play_turn((x, y), num_piece)
+                            temporary_turn, val_child = minimax(game, depth-1, -1)
+                            game.undo_turn()
+                            if val_child >= vmax:
+                                vmax = val_child
+                                turn = (x, y), num_piece
+                    else:
+                        # l'IA ne fait que poser la pièce sans en proposer une au
+                        # joueur
+                        turn = ((x, y), None)
+                        v = -minimax_values_last_piece(game, (x, y))
+                        return turn, v
+        return turn, vmax
+    else:
+        # On itnitialise le meilleur score pour linstant
+        vmin = SCORE_MAX
+        #On parcourt toutes les possibilités
+        for x in range(game.size):
+            for y in range(game.size):
+                if game.board[x][y][0] is None:
+                    if game.bag != {}:
+                        for (num_piece, char_piece) in game.bag.items():
+                            game.play_turn((x, y), num_piece)
+                            temporary_turn, val_child = minimax(game, depth-1, 1)
+                            game.undo_turn()
+                            if val_child <= vmin:
+                                vmin = val_child
+                                turn = (x, y), num_piece
+                    else:
+                        # l'IA ne fait que poser la pièce sans en proposer une au
+                        # joueur
+                        turn = ((x, y), None)
+                        v = minimax_values_last_piece(game, (x, y))
+                        return turn, v
+        return turn, vmin
+############################# Fin Minimax #############################
+
+
 
 ########## ALPHA BETA ##########
 #
-def alphabeta(game, depth, alpha, beta):
-    best_score_yet = -SCORE_MAX # Pour l'instant le meilleur score est la valeur minimale
+def alphabeta(game, depth, player=1, alpha = -float("inf"), beta = float("inf")):
+    """
+    :param:
+     - game : a game state
+     - depth : where to stop in the tree of possibilities
+     - player : 1 = max        -1 = min
+     - alpha = best score for maximizer
+     - beta = best score for minimizer
+    :return: Retourne e score de l'état de jeu "game"
+    """
+
+    if game.win:
+        return (None, -1 * player * SCORE_MAX)
+
+        # TODO: à voir pour le game.end
+    if game.end or depth == 0:
+        return (None, -1 * player * eval(game))
+
+    # best_score_yet = -1 * player * SCORE_MAX
+
     turn = ()
+    # Si on est dans un noeud max
+    if player == 1:
+        # On itnitialise le meilleur score pour linstant
+        vmax = -SCORE_MAX
+        #On parcourt toutes les possibilités
+        for x in range(game.size):
+            for y in range(game.size):
+                if game.board[x][y][0] is None:
+                    if game.bag != {}:
+                        for (num_piece, char_piece) in game.bag.items():
+                            game.play_turn((x, y), num_piece)
+                            temporary_turn, val_child = alphabeta(game, depth-1, -1, alpha, beta)
+                            game.undo_turn()
 
-    for x in range(game.size):
-        for y in range(game.size):
-            if game.board[x][y][0] is None:
-                for (num_piece, char_piece) in game.bag.items():
-                    game.play_turn((x, y), num_piece)
-                    val_child = val_min_AB(game, depth, alpha, beta)
-                    game.undo_turn()
+                            if val_child >= vmax:
+                                vmax = val_child
+                                turn = (x, y), num_piece
 
-                    if val_child > best_score_yet:
-                        best_score_yet = val_child
-                        turn = ((x, y), num_piece)
-    return turn
-    
+                            alpha = max(alpha, vmax)
+                            # Coupure BETA
+                            if alpha >= beta:
+                                return turn, vmax
+                    else:
+                        # l'IA ne fait que poser la pièce sans en proposer une au
+                        # joueur
+                        turn = ((x, y), None)
+                        v = -minimax_values_last_piece(game, (x, y))
+                        return turn, v
+        return turn, vmax
+    else:
+        # On itnitialise le meilleur score pour linstant
+        vmin = SCORE_MAX
+        #On parcourt toutes les possibilités
+        for x in range(game.size):
+            for y in range(game.size):
+                if game.board[x][y][0] is None:
+                    if game.bag != {}:
+                        for (num_piece, char_piece) in game.bag.items():
+                            game.play_turn((x, y), num_piece)
+                            temporary_turn, val_child = alphabeta(game, depth-1, 1, alpha, beta)
+                            game.undo_turn()
 
-def val_min_AB(game, depth, alpha, beta):
-    if game.win:
-        return SCORE_MAX
+                            if val_child <= vmin:
+                                vmin = val_child
+                                turn = (x, y), num_piece
 
-    # TODO: à voir pour le game.end
-    if game.end or depth == 0:
-        return eval(game)
+                            beta = min(beta, vmin)
 
-    vmin = SCORE_MAX
-    for x in range(game.size):
-        for y in range(game.size):
-            if game.board[x][y][0] is None:
-                for (num_piece, char_piece) in game.bag.items():
-                    game.play_turn((x, y), num_piece)
-                    val_child = val_max_AB(game, depth - 1, alpha, beta)
-                    vmin = max(val_child, vmin)
-                    if alpha >= vmin:
-                        return vmin
-                    beta = min(beta, vmin)
-                    game.undo_turn()
-    return vmin
-    
-    
-def val_max_AB(game, depth, alpha, beta):
-    if game.win:
-        return -SCORE_MAX
+                            # Coupure alpha
+                            if alpha >= beta:
+                                return turn, vmin
+                    else:
+                        # l'IA ne fait que poser la pièce sans en proposer une au
+                        # joueur
+                        turn = ((x, y), None)
+                        v = minimax_values_last_piece(game, (x, y))
+                        return turn, v
+        return turn, vmin
 
-    # TODO: à voir pour le game.end
-    if game.end or depth == 0:
-        return eval(game)
+############ FIN ALPHA BETA ################
 
-    vmax = -SCORE_MAX
-    for x in range(game.size):
-        for y in range(game.size):
-            if game.board[x][y][0] is None:
-                for (num_piece, char_piece) in game.bag.items():
-                    game.play_turn((x, y), num_piece)
-                    val_child = val_min_AB(game, depth - 1, alpha, beta)
-                    vmax = min(val_child, vmax)
-                    if vmax >= beta:
-                        return vmax
-                    alpha = max(alpha, vmax)
-                    game.undo_turn()
-    return vmax
-                    
+
+
+
+
+
+
+
+
+############################## POUBELLE ############################
+
+
+#
+#
+# ########## MINIMAX ##########
+# #
+# def minimax(game, depth):
+#     """
+#
+#     :param n: Profondeur maximale de l'arbre
+#     :return: Retourne e score de l'état de jeu "game"
+#     """
+#     best_score_yet = -SCORE_MAX # Pour l'instant le meilleur score est la valeur minimale
+#     turn = ()
+#
+#     for x in range(game.size):
+#         for y in range(game.size):
+#             if game.board[x][y][0] is None:
+#                 if game.bag != {}:  # traite le cas si le sac est vide : on est à la fin du jeu : l'IA ne peut pas choisir de pièce pour le joueur
+#                     for (num_piece, char_piece) in game.bag.items():
+#                         game.play_turn((x, y), num_piece)
+#                         val_child = val_min(game, depth)
+#                         if DEBUG:
+#                             print("pour la coord {} {} la caractéristique {}, valchild = {}".format(x, y, num_piece, val_child))
+#                         game.undo_turn()
+#
+#                         if val_child >= best_score_yet: # J'ai (raph) mis un égal ici pour qu'il y ait au moins un coup à jouer
+#                             best_score_yet = val_child
+#                             turn = ((x, y), num_piece)
+#                 else: # l'IA ne fait que poser la pièce sans en proposer une au joueur
+#                     return ((x, y), None)
+#     return turn
+#
+# def val_min(game, depth):
+#     if game.win:
+#         return SCORE_MAX
+#
+#     #TODO: à voir pour le game.end
+#     if game.end or depth == 0:
+#         return eval(game)
+#
+#
+#     vmin = SCORE_MAX
+#     for x in range(game.size):
+#         for y in range(game.size):
+#             if game.board[x][y][0] is None:
+#                 if game.bag != {}: # traite la fin d'une partie, qd y a plus de pièce dans le sac
+#                     for (num_piece, char_piece) in game.bag.items():
+#                         game.play_turn((x, y), num_piece)
+#                         val_child = val_max(game, depth - 1)
+#                         vmin = min(vmin, val_child)
+#                         game.undo_turn()
+#
+#
+#                 else:
+#                     return minimax_values_last_piece(game, (x, y))
+#
+#     return vmin
+#
+#
+# def val_max(game, depth):
+#     if game.win:
+#         return -SCORE_MAX
+#
+#     # TODO: à voir pour le game.end
+#     if game.end or depth == 0:
+#         return -eval(game)
+#
+#     vmax = -SCORE_MAX
+#     for x in range(game.size):
+#         for y in range(game.size):
+#             if game.board[x][y][0] is None:
+#                 if game.bag != {}: # traite la fin d'une partie, qd y a plus de pièce dans le sac
+#                     for (num_piece, char_piece) in game.bag.items():
+#                         game.play_turn((x, y), num_piece)
+#                         val_child = val_min(game, depth - 1)
+#                         vmax = max(vmax, val_child)
+#                         game.undo_turn()
+#
+#                 else:
+#                     return -minimax_values_last_piece(game, (x, y))
+#     return vmax
+#
+#
+#
+#
+# #
+# ########## FIN DU MINIMAX ##########
+#
+# ########## ALPHA BETA ##########
+# #
+# def alphabeta(game, depth, alpha, beta):
+#     best_score_yet = -SCORE_MAX # Pour l'instant le meilleur score est la valeur minimale
+#     turn = ()
+#
+#     for x in range(game.size):
+#         for y in range(game.size):
+#             if game.board[x][y][0] is None:
+#                 for (num_piece, char_piece) in game.bag.items():
+#                     game.play_turn((x, y), num_piece)
+#                     val_child = val_min_AB(game, depth, alpha, beta)
+#                     game.undo_turn()
+#
+#                     if val_child > best_score_yet:
+#                         best_score_yet = val_child
+#                         turn = ((x, y), num_piece)
+#     return turn
+#
+#
+# def val_min_AB(game, depth, alpha, beta):
+#     if game.win:
+#         return SCORE_MAX
+#
+#     # TODO: à voir pour le game.end
+#     if game.end or depth == 0:
+#         return eval(game)
+#
+#     vmin = SCORE_MAX
+#     for x in range(game.size):
+#         for y in range(game.size):
+#             if game.board[x][y][0] is None:
+#                 for (num_piece, char_piece) in game.bag.items():
+#                     game.play_turn((x, y), num_piece)
+#                     val_child = val_max_AB(game, depth - 1, alpha, beta)
+#                     vmin = max(val_child, vmin)
+#                     if alpha >= vmin:
+#                         return vmin
+#                     beta = min(beta, vmin)
+#                     game.undo_turn()
+#     return vmin
+#
+#
+# def val_max_AB(game, depth, alpha, beta):
+#     if game.win:
+#         return -SCORE_MAX
+#
+#     # TODO: à voir pour le game.end
+#     if game.end or depth == 0:
+#         return eval(game)
+#
+#     vmax = -SCORE_MAX
+#     for x in range(game.size):
+#         for y in range(game.size):
+#             if game.board[x][y][0] is None:
+#                 for (num_piece, char_piece) in game.bag.items():
+#                     game.play_turn((x, y), num_piece)
+#                     val_child = val_min_AB(game, depth - 1, alpha, beta)
+#                     vmax = min(val_child, vmax)
+#                     if vmax >= beta:
+#                         return vmax
+#                     alpha = max(alpha, vmax)
+#                     game.undo_turn()
+#     return vmax
+#
   
 
     

@@ -346,7 +346,9 @@ class Ui_MainWindow(object):
 
             else:
 
-                    (coordinates, num_piece) = ia.minimax(launched_game, 3)
+                    # ((coordinates, num_piece), v) = ia.minimax(launched_game, 3)
+                    ((coordinates, num_piece), v) = ia.alphabeta(launched_game, 3)
+
                     launched_game.play_turn(coordinates, num_piece)
                     row = coordinates[0]
                     col = coordinates[1]

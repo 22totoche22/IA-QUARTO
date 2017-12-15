@@ -34,8 +34,8 @@ if __name__ == "__main__":
             t1 = time.time()
             # TODO: augmenter la profondeur lorsqu'on arrive vers une grille plus remplie
 
-            (coord, num_piece) = ia.alphabeta(launched_game, 5, -float("inf"), float("inf"))
-            # (coord, num_piece) = ia.minimax(launched_game, 3)
+            ((coord, num_piece), v) = ia.alphabeta(launched_game, 3)
+            # ((coord, num_piece), v) = ia.minimax(launched_game, 3)
             print(coord, num_piece)
 
             launched_game.play_turn(coord, num_piece)
