@@ -35,7 +35,7 @@ class Game:
         self.selected_piece = None
         # On initialise avec la pièce 0 car le choix de la première piece et de son emplacement n'a que tres
         # peu d'importance
-        self.select_piece(0)
+        #self.select_piece(0)
 
         self.win = False
         self.end = False
@@ -43,7 +43,8 @@ class Game:
 
         # A LIFO (last in first out) in order to store every action from each player
         # An element is a tuple (coord, sel_piece) which represents
-        self.turns_played = deque([(None, self.selected_piece.num)])
+        #self.turns_played = deque([(None, self.selected_piece.num)])
+        self.coord = None
 
     def init_from_turns_played(self, list_of_turns):
         """

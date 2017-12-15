@@ -1,15 +1,18 @@
 import time
 import game
 import ia
+from collections import deque
 
 t1 = time.time()
 if __name__ == "__main__":
     launched_game = game.Game(game.SIZE)
     #launched_game.init_from_turns_played([(None, 0), ((2, 2), 6), ((2, 1), 5), ((2, 0), 1), ((1, 2), 7)])
     ## DEBUT MAIN AVEC IA
-    #
+    launched_game.select_piece(0)
+    launched_game.turns_played = deque([(None, launched_game.selected_piece.num)])
     while not launched_game.end:
         if launched_game.current_player == 1:
+
             print("\n\n{:=^50}".format("Tour du joueur " + str(launched_game.current_player)))
             print("Sélectionnez la coordonnées où vous voulez placer la pièce ({}) : ".format(launched_game.selected_piece))
             print()
@@ -31,8 +34,16 @@ if __name__ == "__main__":
 
             # TODO: augmenter la profondeur lorsqu'on arrive vers une grille plus remplie
             # (coord, num_piece) = ia.alphabeta(launched_game, 3, -float("inf"), float("inf"))
-            (coord, num_piece) = ia.minimax(launched_game, 3)
+            print(launched_game.bag)
+            print((launched_game.board))
+            print(launched_game.selected_piece)
+            print(launched_game.turns_played)
+            (coord, num_piece) = ia.minimax(launched_game, 2)
             print(coord, num_piece)
+            print(launched_game.bag)
+            print((launched_game.board))
+            print(launched_game.selected_piece)
+            print(launched_game.turns_played)
             
             launched_game.play_turn(coord, num_piece)
 
