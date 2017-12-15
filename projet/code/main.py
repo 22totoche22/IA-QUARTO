@@ -33,12 +33,17 @@ if __name__ == "__main__":
             print("\n\n{:=^50}".format(" Tour de Charles-Maurice "))
 
             # TODO: augmenter la profondeur lorsqu'on arrive vers une grille plus remplie
+<<<<<<< HEAD
             # (coord, num_piece) = ia.alphabeta(launched_game, 3, -float("inf"), float("inf"))
             print(launched_game.bag)
             print((launched_game.board))
             print(launched_game.selected_piece)
             print(launched_game.turns_played)
             (coord, num_piece) = ia.minimax(launched_game, 2)
+=======
+            (coord, num_piece) = ia.alphabeta(launched_game, 5, -float("inf"), float("inf"))
+            # (coord, num_piece) = ia.minimax(launched_game, 3)
+>>>>>>> 49a42f95e7d1fc29c5add664746e4b0b1dc3d580
             print(coord, num_piece)
             print(launched_game.bag)
             print((launched_game.board))
@@ -81,5 +86,5 @@ if __name__ == "__main__":
     #
     #     launched_game.play_turn((x, y), i)
 
-    print("QUARTO")
+    
 
