@@ -69,7 +69,7 @@ def minimax(game, depth):
                             best_score_yet = val_child
                             turn = ((x, y), num_piece)
                 else: # l'IA ne fait que poser la pièce sans en proposer une au joueur
-                    return minimax_values_last_piece(game, (x, y))
+                    return ((x, y), None)
     return turn
 
 def val_min(game, depth):
