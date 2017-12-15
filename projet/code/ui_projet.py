@@ -354,8 +354,9 @@ class Ui_MainWindow(object):
                     self.tableWidget.setItem(row, col, item)
                     self.listWidget.takeItem(self.listWidget.currentRow())
                     self.tableWidget.item(row, col).setFlags(QtCore.Qt.ItemIsEnabled)
-                    item = self.listWidget.findItems(str(num_piece)+' :',QtCore.Qt.MatchStartsWith)[0] #return a list of the items which have the beginning asked
-                    self.listWidget.setCurrentItem(item)
+                    if not num_piece == None:
+                        item = self.listWidget.findItems(str(num_piece)+' :',QtCore.Qt.MatchStartsWith)[0] #return a list of the items which have the beginning asked
+                        self.listWidget.setCurrentItem(item)
 
 
                     self.listWidget.setDisabled(True)
