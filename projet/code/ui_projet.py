@@ -5,6 +5,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import game
 import ia
 from collections import deque
+from random import randrange
 launched_game = game.Game(game.SIZE)
 #il faut commenter dans game #self.select_piece(0) et #self.turns_played = deque([(None, self.selected_piece.num)])
 #j'ai rajouté attribut coord
@@ -145,17 +146,17 @@ class Ui_MainWindow(object):
         self.players.setObjectName("players")
 
         '''PlayerA'''
-        self.label_6 = QtWidgets.QLabel(self.centralWidget)
-        self.label_6.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_6.setObjectName("label_6")
-        self.players.addWidget(self.label_6)
 
+        self.pushButton_2 = QtWidgets.QPushButton(self.centralWidget)
+        self.pushButton_2.setObjectName("pushButton")
+        self.players.addWidget(self.pushButton_2)
 
         '''PlayerB'''
-        self.label_5 = QtWidgets.QLabel(self.centralWidget)
-        self.label_5.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_5.setObjectName("label_5")
-        self.players.addWidget(self.label_5)
+
+        self.pushButton_3 = QtWidgets.QPushButton(self.centralWidget)
+        self.pushButton_3.setObjectName("pushButton")
+        self.players.addWidget(self.pushButton_3)
+
 
         '''Indications'''
         self.label_7 = QtWidgets.QLabel(self.centralWidget)
@@ -222,11 +223,12 @@ class Ui_MainWindow(object):
 
 
 
-        self.label_6.setStyleSheet(" font : bold 12px")
-        self.label_7.setText("Choisis une piece")
-        self.listWidget.setDisabled(False)
+        #self.label_6.setStyleSheet(" font : bold 12px")
+        self.label_7.setText("Choisis qui commence")
+        self.listWidget.setDisabled(True)
         self.tableWidget.setDisabled(True)
         self.first = True
+        launched_game.current_player =None
 
 
 
@@ -239,7 +241,20 @@ class Ui_MainWindow(object):
         # self.buttonBox.rejected.connect(self.annul)
         # self.buttonBox.rejected.connect(self.annul)
         self.buttonBox.accepted.connect(self.joue_piece2)
+
+        self.pushButton_2.clicked.connect(self.choose)
+        self.pushButton_3.clicked.connect(self.chooseb)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def choose(self):
+        self.pushButton_2.setStyleSheet(" font : bold 12px")
+        self.pushButton_3.setStyleSheet("")
+        launched_game.current_player = 1
+
+    def chooseb(self):
+        self.pushButton_3.setStyleSheet(" font : bold 12px")
+        self.pushButton_2.setStyleSheet("")
+        launched_game.current_player = -1
 
     def change_time(self):
         self.time = self.time.addSecs(1)
@@ -297,12 +312,33 @@ class Ui_MainWindow(object):
     def joue_piece2(self):
 
         if self.first:
-            if self.listWidget.selectedItems():
+            if launched_game.current_player == 1:
+                self.listWidget.setDisabled(False)
+                self.tableWidget.setDisabled(True)
+                self.label_7.setText("Choisis une pièce")
+                if self.listWidget.selectedItems():
+                    self.listWidget.setDisabled(True)
+                    self.tableWidget.setDisabled(True)
+                    launched_game.select_piece(int(self.listWidget.currentItem().text()[0:2]))
+                    launched_game.turns_played = deque([(None, launched_game.selected_piece.num)])
+                    self.pushButton_3.setStyleSheet(" font : bold 12px")
+                    self.pushButton_2.setStyleSheet("")
+                    self.first = False
+                    launched_game.current_player = -1
+                    self.label_7.setText("laisse moi réfléchir !")
+            else:
                 self.listWidget.setDisabled(True)
                 self.tableWidget.setDisabled(False)
-                launched_game.select_piece(int(self.listWidget.currentItem().text()[0:2]))
+                num_piece = randrange(0,((game.SIZE)**2)-1)
+                launched_game.select_piece(num_piece)
+                item = self.listWidget.findItems(str(num_piece) + ' :', QtCore.Qt.MatchStartsWith)[0]
+                self.listWidget.setCurrentItem(item)
                 launched_game.turns_played = deque([(None, launched_game.selected_piece.num)])
                 self.first = False
+                self.pushButton_2.setStyleSheet(" font : bold 12px")
+                self.pushButton_3.setStyleSheet("")
+                launched_game.current_player = 1
+                self.label_7.setText("Place la pièce")
         else:
             if launched_game.current_player == 1:
                 if self.tableWidget.isEnabled():
@@ -329,19 +365,21 @@ class Ui_MainWindow(object):
                             self.pushButton.setStyleSheet("color : red; font : bold 16px")
                             self.tableWidget.setDisabled(True)
                             self.listWidget.setDisabled(True)
+                        self.label_7.setText("Choisis une pièce")
                 else:
                     if self.listWidget.selectedItems():
 
                         num = int(self.listWidget.currentItem().text()[0:2]) # à generaliser
                         launched_game.select_piece(num)
                         launched_game.turns_played.append((launched_game.coord, num))
+                        print(launched_game.turns_played)
 
                         self.listWidget.setDisabled(True)
                         self.tableWidget.setDisabled(True)
                         launched_game.current_player = -1
-                        self.label_5.setStyleSheet(" font : bold 12px")
-                        self.label_6.setStyleSheet("")
-
+                        self.pushButton_3.setStyleSheet(" font : bold 12px")
+                        self.pushButton_2.setStyleSheet("")
+                        self.label_7.setText("laisse moi réfléchir !")
 
 
             else:
@@ -360,14 +398,15 @@ class Ui_MainWindow(object):
                         item = self.listWidget.findItems(str(num_piece)+' :',QtCore.Qt.MatchStartsWith)[0] #return a list of the items which have the beginning asked
                         self.listWidget.setCurrentItem(item)
 
-
+                    print(launched_game.turns_played)
+                    print(launched_game.board)
+                    print(launched_game)
                     self.listWidget.setDisabled(True)
                     self.tableWidget.setDisabled(False)
-                    print(launched_game.bag)
-                    print((launched_game.board))
                     launched_game.current_player = 1
-                    self.label_6.setStyleSheet(" font : bold 12px")
-                    self.label_5.setStyleSheet("")
+                    self.pushButton_2.setStyleSheet(" font : bold 12px")
+                    self.pushButton_3.setStyleSheet("")
+                    self.label_7.setText("Place la pièce")
 
                     if launched_game.end:
                         self.pushButton.setStyleSheet("color : red; font : bold 16px")
@@ -403,8 +442,8 @@ class Ui_MainWindow(object):
         self.tableWidget.setSortingEnabled(False)
         self.label_2.setText(_translate("MainWindow", "Pièce:"))
         self.label_3.setText(_translate("MainWindow", "Coordonéés:"))
-        self.label_6.setText(_translate("MainWindow", "Bob"))
-        self.label_5.setText(_translate("MainWindow", "Charles-Maurice"))
+        self.pushButton_2.setText(_translate("MainWindow", "Bob"))
+        self.pushButton_3.setText(_translate("MainWindow", "Charles-Maurice"))
         self.pushButton.setText(_translate("MainWindow", "\"Quarto\""))
         self.pushButton.setStyleSheet("font : bold 12px")
 
