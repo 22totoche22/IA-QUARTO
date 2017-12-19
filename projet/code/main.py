@@ -7,10 +7,13 @@ from random import randrange
 t1 = time.time()
 if __name__ == "__main__":
     launched_game = game.Game(game.SIZE)
-    #launched_game.init_from_turns_played([(None, 0), ((2, 2), 6), ((2, 1), 5), ((2, 0), 1), ((1, 2), 7)])
+    # deque([(None, 3), ((1, 2), 15), ((3, 3), 1), ((2, 2), 7), ((3, 2), 5)])
+    # deque([(None, 3), ((1, 2), 15), ((3, 3), 13), ((2, 2), 7), ((3, 2), 11)])
     ## DEBUT MAIN AVEC IA
-    launched_game.select_piece(randrange(launched_game.size))
+    # launched_game.select_piece(randrange(launched_game.size))
+    launched_game.select_piece(3)
     launched_game.turns_played = deque([(None, launched_game.selected_piece.num)])
+    # launched_game.init_from_turns_played([(None, 3), ((1, 2), 15)])
     while not launched_game.end:
         if launched_game.current_player == 1:
 
@@ -35,8 +38,8 @@ if __name__ == "__main__":
             t1 = time.time()
             # TODO: augmenter la profondeur lorsqu'on arrive vers une grille plus remplie
 
-            #((coord, num_piece), v) = ia.alphabeta(launched_game, 3)
-            ((coord, num_piece), v) = ia.minimax(launched_game, 4)
+            ((coord, num_piece), v) = ia.alphabeta(launched_game, 3)
+            # ((coord, num_piece), v) = ia.minimax(launched_game, 4)
             print(coord, num_piece)
 
             launched_game.play_turn(coord, num_piece)

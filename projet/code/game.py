@@ -10,7 +10,7 @@ from collections import deque
 
 PLAYER_A = 1
 PLAYER_B = -1
-SIZE = 3
+SIZE = 4
 
 # In order to print things in the console to help with debugging
 DEBUG = True
@@ -53,7 +53,7 @@ class Game:
         :return:
         """
         # A rajouter si on change l'init juste au dessus (la pièce 0 est selectionnée de base)
-        # self.select_piece(list_of_turns[0][1])
+        self.select_piece(list_of_turns[0][1])
         for i in range(1, len(list_of_turns)):
             x = list_of_turns[i][0][0]
             y = list_of_turns[i][0][1]

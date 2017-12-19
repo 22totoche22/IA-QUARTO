@@ -158,11 +158,11 @@ def alphabeta(game, depth, player=1, alpha = -float("inf"), beta = float("inf"))
 
     # best_score_yet = -1 * player * SCORE_MAX
 
-    turn = ()
     # Si on est dans un noeud max
     if player == 1:
         # On itnitialise le meilleur score pour linstant
         vmax = -SCORE_MAX
+        turn = ()
         #On parcourt toutes les possibilités
         for x in range(game.size):
             for y in range(game.size):
@@ -179,9 +179,10 @@ def alphabeta(game, depth, player=1, alpha = -float("inf"), beta = float("inf"))
                                 #return turn, vmax
                             #alpha = max(alpha, vmax)
 
-                            if val_child >= vmax:
+                            if val_child > vmax:
                                 vmax = val_child
                                 turn = (x, y), num_piece
+                                print("\t" * (2 - depth), 1, temporary_turn, val_child, alpha, beta)
 
                             alpha = max(alpha, vmax)
                             # Coupure BETA
@@ -197,6 +198,7 @@ def alphabeta(game, depth, player=1, alpha = -float("inf"), beta = float("inf"))
     else:
         # On itnitialise le meilleur score pour linstant
         vmin = SCORE_MAX
+        turn = ()
         #On parcourt toutes les possibilités
         for x in range(game.size):
             for y in range(game.size):
@@ -213,9 +215,10 @@ def alphabeta(game, depth, player=1, alpha = -float("inf"), beta = float("inf"))
                                 # return turn, vmin
                             # beta = min(beta, vmin)
 
-                            if val_child <= vmin:
+                            if val_child < vmin:
                                 vmin = val_child
                                 turn = (x, y), num_piece
+                                print("\t" * (2 - depth), -1, temporary_turn, val_child, alpha, beta)
 
                             beta = min(beta, vmin)
 

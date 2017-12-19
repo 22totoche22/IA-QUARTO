@@ -373,6 +373,8 @@ class Ui_MainWindow(object):
                         self.pushButton.setStyleSheet("color : red; font : bold 16px")
                         self.tableWidget.setDisabled(True)
                         self.listWidget.setDisabled(True)
+                        print(launched_game)
+                        print(launched_game.turns_played)
 
 
 
