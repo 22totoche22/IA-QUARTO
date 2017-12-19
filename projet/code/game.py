@@ -10,7 +10,7 @@ from collections import deque
 
 PLAYER_A = 1
 PLAYER_B = -1
-SIZE = 3
+SIZE = 4
 
 # In order to print things in the console to help with debugging
 DEBUG = True
