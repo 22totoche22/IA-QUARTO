@@ -173,6 +173,12 @@ def alphabeta(game, depth, player=1, alpha = -float("inf"), beta = float("inf"))
                             temporary_turn, val_child = alphabeta(game, depth-1, -1, alpha, beta)
                             game.undo_turn()
 
+                            #vmax = max(vmax, val_child)
+                            #if vmax >= beta:
+                                #turn = (x,y), num_piece
+                                #return turn, vmax
+                            #alpha = max(alpha, vmax)
+
                             if val_child >= vmax:
                                 vmax = val_child
                                 turn = (x, y), num_piece
@@ -200,6 +206,12 @@ def alphabeta(game, depth, player=1, alpha = -float("inf"), beta = float("inf"))
                             game.play_turn((x, y), num_piece)
                             temporary_turn, val_child = alphabeta(game, depth-1, 1, alpha, beta)
                             game.undo_turn()
+
+                            # vmin = min(vmin, val_child)
+                            # if alpha >= vmin:
+                                # turn = (x,y), num_piece
+                                # return turn, vmin
+                            # beta = min(beta, vmin)
 
                             if val_child <= vmin:
                                 vmin = val_child
