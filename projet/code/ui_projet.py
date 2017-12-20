@@ -247,14 +247,16 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def choose(self):
-        self.pushButton_2.setStyleSheet(" font : bold 12px")
-        self.pushButton_3.setStyleSheet("")
-        launched_game.current_player = 1
+        if self.first:
+            self.pushButton_2.setStyleSheet(" font : bold 12px")
+            self.pushButton_3.setStyleSheet("")
+            launched_game.current_player = 1
 
     def chooseb(self):
-        self.pushButton_3.setStyleSheet(" font : bold 12px")
-        self.pushButton_2.setStyleSheet("")
-        launched_game.current_player = -1
+        if self.first:
+            self.pushButton_3.setStyleSheet(" font : bold 12px")
+            self.pushButton_2.setStyleSheet("")
+            launched_game.current_player = -1
 
     def change_time(self):
         self.time = self.time.addSecs(1)
@@ -326,7 +328,7 @@ class Ui_MainWindow(object):
                     self.first = False
                     launched_game.current_player = -1
                     self.label_7.setText("laisse moi réfléchir !")
-            else:
+            if launched_game.current_player == -1:
                 self.listWidget.setDisabled(True)
                 self.tableWidget.setDisabled(False)
                 num_piece = randrange(0,((game.SIZE)**2)-1)
