@@ -328,7 +328,7 @@ class Ui_MainWindow(object):
                     self.first = False
                     launched_game.current_player = -1
                     self.label_7.setText("laisse moi réfléchir !")
-            if launched_game.current_player == -1:
+            else:
                 self.listWidget.setDisabled(True)
                 self.tableWidget.setDisabled(False)
                 num_piece = randrange(0,((game.SIZE)**2)-1)
