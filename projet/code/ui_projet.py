@@ -387,7 +387,14 @@ class Ui_MainWindow(object):
             else:
 
                     # ((coordinates, num_piece), v) = ia.minimax(launched_game, 3)
-                    ((coordinates, num_piece), v) = ia.alphabeta(launched_game, 3)
+                    #((coordinates, num_piece), v) = ia.alphabeta(launched_game, 3)
+                    if len(launched_game.bag) >= 2**launched_game.size - launched_game.size :
+                        ((coordinates, num_piece), v) = ia.alphabeta(launched_game, 2)
+                    elif 2**launched_game.size - launched_game.size > len(launched_game.bag) >= launched_game.size :
+                        ((coordinates, num_piece), v) = ia.alphabeta(launched_game, 3)
+                    else :# len(launched_game.bag) <= launched_game.size :
+                        ((coordinates, num_piece), v) = ia.alphabeta(launched_game, 4)
+
 
                     launched_game.play_turn(coordinates, num_piece)
                     row = coordinates[0]
