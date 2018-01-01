@@ -390,10 +390,10 @@ class Ui_MainWindow(object):
                     #((coordinates, num_piece), v) = ia.alphabeta(launched_game, 3)
                     if len(launched_game.bag) >= 2**launched_game.size - launched_game.size :
                         ((coordinates, num_piece), v) = ia.alphabeta(launched_game, 2)
-                    elif 2**launched_game.size - launched_game.size > len(launched_game.bag) >= launched_game.size :
+                    elif 2**launched_game.size - launched_game.size > len(launched_game.bag) >= 6 :#2*launched_game.size :
                         ((coordinates, num_piece), v) = ia.alphabeta(launched_game, 3)
                     else :# len(launched_game.bag) <= launched_game.size :
-                        ((coordinates, num_piece), v) = ia.alphabeta(launched_game, 4)
+                        ((coordinates, num_piece), v) = ia.alphabeta(launched_game, 6)
 
 
                     launched_game.play_turn(coordinates, num_piece)
@@ -455,6 +455,7 @@ class Ui_MainWindow(object):
         self.pushButton_3.setText(_translate("MainWindow", "Charles-Maurice"))
         self.pushButton.setText(_translate("MainWindow", "\"Quarto\""))
         self.pushButton.setStyleSheet("font : bold 12px")
+
 
 
 if __name__ == "__main__":
