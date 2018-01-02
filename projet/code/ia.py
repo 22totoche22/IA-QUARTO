@@ -34,9 +34,10 @@ def eval(game): #applique la fonction eval_line sur chaque ligne du jeu + les di
         for i in range(game.size):
             line1 = [board[i][l][k] for l in range(game.size)]
             line2 = [board[l][i][k] for l in range(game.size)]
+            evaluation = evaluation + eval_line(line1, game.size) + eval_line(line2, game.size)
         line3 = [board[l][l][k] for l in range(game.size)]
         line4 = [board[l][game.size-1-l][k] for l in range(game.size)]
-        evaluation = eval_line(line1, game.size)+eval_line(line2, game.size)+eval_line(line3, game.size)+eval_line(line4,game.size)
+        evaluation = evaluation + eval_line(line3, game.size) + eval_line(line4,game.size)
     return evaluation
 
 
@@ -182,7 +183,7 @@ def alphabeta(game, depth, player=1, alpha = -float("inf"), beta = float("inf"))
                             if val_child > vmax:
                                 vmax = val_child
                                 turn = (x, y), num_piece
-                                print("\t" * (2 - depth), 1, temporary_turn, val_child, alpha, beta)
+                                #print("\t" * (2 - depth), 1, temporary_turn, val_child, alpha, beta)
 
                             alpha = max(alpha, vmax)
                             # Coupure BETA
@@ -218,7 +219,7 @@ def alphabeta(game, depth, player=1, alpha = -float("inf"), beta = float("inf"))
                             if val_child < vmin:
                                 vmin = val_child
                                 turn = (x, y), num_piece
-                                print("\t" * (2 - depth), -1, temporary_turn, val_child, alpha, beta)
+                                #print("\t" * (2 - depth), -1, temporary_turn, val_child, alpha, beta)
 
                             beta = min(beta, vmin)
 
