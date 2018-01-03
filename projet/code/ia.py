@@ -9,35 +9,47 @@ DEBUG = False
 
 ########## Fonction d'évaluation ##########
 #
-def eval_line(L, n):
+def eval_line(L, n, p):
     """Param : une liste L, la taille du jeu n
     renvoie la valeur d'un pseudo alignement (1,2,ou3) sur la ligne L"""
     C=0
     C_N=0
-    for elem in L:
+    for i, elem in enumerate(L):
         if elem == None:
             C_N += 1
         else:
             C += elem
     if C_N + C == n or C ==0:
-        res = n-C_N
+        if 0 < C_N < 4:
+            i = 0
+            elem = L[i]
+            while elem == None :
+                i += 1
+                elem = L[i]
+            if p == elem:
+                res = -(n - C_N + 1)
+            else :
+                res = n - C_N
+        else :
+            res = n - C_N
     else:
         res = 0
     return res
 
-#print(eval_line([1,None,None,None],4))
+#print(eval_line([1,1,1,1],4, 1))
 
 def eval(game): #applique la fonction eval_line sur chaque ligne du jeu + les diagonales.
     evaluation = 0
     board = game.board
     for k in range(game.size):
+        p = game.selected_piece.charact[k]
         for i in range(game.size):
             line1 = [board[i][l][k] for l in range(game.size)]
             line2 = [board[l][i][k] for l in range(game.size)]
-            evaluation = evaluation + eval_line(line1, game.size) + eval_line(line2, game.size)
+            evaluation = evaluation + eval_line(line1, game.size, p) + eval_line(line2, game.size, p)
         line3 = [board[l][l][k] for l in range(game.size)]
         line4 = [board[l][game.size-1-l][k] for l in range(game.size)]
-        evaluation = evaluation + eval_line(line3, game.size) + eval_line(line4,game.size)
+        evaluation = evaluation + eval_line(line3, game.size, p) + eval_line(line4,game.size, p)
     return evaluation
 
 
