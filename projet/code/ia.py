@@ -205,7 +205,7 @@ def alphabeta(game, depth, player=1, alpha = -float("inf"), beta = float("inf"))
                         # l'IA ne fait que poser la pièce sans en proposer une au
                         # joueur
                         turn = ((x, y), None)
-                        v = -minimax_values_last_piece(game, (x, y))
+                        v = minimax_values_last_piece(game, (x, y)) # avant c'était un - mais ça semble mieux marcher comme ça
                         return turn, v
         return turn, vmax
     else:
@@ -242,7 +242,7 @@ def alphabeta(game, depth, player=1, alpha = -float("inf"), beta = float("inf"))
                         # l'IA ne fait que poser la pièce sans en proposer une au
                         # joueur
                         turn = ((x, y), None)
-                        v = minimax_values_last_piece(game, (x, y))
+                        v = -minimax_values_last_piece(game, (x, y)) # avant c'était un + mais ça semble mieux marcher comme ça
                         return turn, v
         return turn, vmin
 
