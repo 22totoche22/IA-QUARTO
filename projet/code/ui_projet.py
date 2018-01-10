@@ -9,6 +9,7 @@ from random import randrange
 launched_game = game.Game(game.SIZE)
 #il faut commenter dans game #self.select_piece(0) et #self.turns_played = deque([(None, self.selected_piece.num)])
 #j'ai rajouté attribut coord
+PICTURES = True
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -16,8 +17,7 @@ class Ui_MainWindow(object):
 
         MainWindow.setObjectName("MainWindow")
         MainWindow.setEnabled(True)
-        MainWindow.resize(517, 363)
-        MainWindow.setMinimumSize(600, 455)
+        MainWindow.setMinimumSize(800, 720)
 
 
         self.centralWidget = QtWidgets.QWidget(MainWindow)
@@ -85,7 +85,7 @@ class Ui_MainWindow(object):
 
 
         #tailel du bag
-        self.listWidget.setMaximumWidth(100)
+        self.listWidget.setMaximumWidth(150)
 
 
         self.Principale.addLayout(self.table_list)
@@ -215,9 +215,29 @@ class Ui_MainWindow(object):
         self.tableWidget.setColumnCount(game.SIZE)
         self.tableWidget.setHorizontalHeaderLabels([str(i) for i in (range(game.SIZE))])
         self.tableWidget.setVerticalHeaderLabels([str(i) for i in (range(game.SIZE))])
+        self.tab_disabled = None
 
         # ajout des items dans le sac
-        self.listWidget.addItems([str(i)+' : '+str(launched_game.bag[i].charact) for i in range(len(launched_game.bag))])
+        if game.SIZE ==4 and PICTURES:
+            for i in range(len(launched_game.bag)):
+                item = QtWidgets.QListWidgetItem()
+                item.setText(str(i) + ' : ' + str(launched_game.bag[i].charact))
+                font = QtGui.QFont()
+                palette=QtGui.QBrush()
+                palette.setColor(QtGui.QColor(255,255,255))
+                font.setPixelSize(1)
+                item.setFont(font)
+                item.setForeground(palette)
+                text = ''
+                for i in launched_game.bag[i].charact:
+                    text += str(i)
+                icon_path = "../images/" + text + ".png"
+                icon = QtGui.QIcon(icon_path)
+                item.setIcon(icon)
+                self.listWidget.addItem(item)
+                self.listWidget.setIconSize(QtCore.QSize(30, 30))
+        else :
+            self.listWidget.addItems([str(i)+' : '+str(launched_game.bag[i].charact) for i in range(len(launched_game.bag))])
         self.listWidget.addItems([None])  # probleme sinon dans le cas ou la liste est vide
         self.listWidget.item(len(launched_game.bag)).setFlags(QtCore.Qt.ItemIsEnabled)
 
@@ -225,8 +245,8 @@ class Ui_MainWindow(object):
 
         #self.label_6.setStyleSheet(" font : bold 12px")
         self.label_7.setText("Choisis qui commence")
-        self.listWidget.setDisabled(True)
-        self.tableWidget.setDisabled(True)
+        self.list_disabled(True)
+        self.table_disabled(True)
         self.first = True
         launched_game.current_player =None
 
@@ -238,13 +258,14 @@ class Ui_MainWindow(object):
 
         self.listWidget.itemSelectionChanged.connect(self.ecrit_piece)
         self.tableWidget.itemSelectionChanged.connect(self.ecrit_coord)
-        # self.buttonBox.rejected.connect(self.annul)
-        # self.buttonBox.rejected.connect(self.annul)
+        self.buttonBox.rejected.connect(self.annul)
         self.buttonBox.accepted.connect(self.joue_piece2)
 
         self.pushButton_2.clicked.connect(self.choose)
         self.pushButton_3.clicked.connect(self.chooseb)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+        '''les fonctions'''
 
     def choose(self):
         if self.first:
@@ -263,10 +284,25 @@ class Ui_MainWindow(object):
         self.label_4.setText(self.time.toString("hh:mm:ss"))
 
     def annul(self):
-        self.lineEdit.clear()
-        self.lineEdit_2.clear()
-        self.tableWidget.clearSelection()
-        self.listWidget.clearSelection()
+        pass
+
+    def list_disabled(self,bool):
+        if bool :
+            self.listWidget.setFocusPolicy(QtCore.Qt.NoFocus)
+            self.listWidget.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
+        else:
+            self.listWidget.setFocusPolicy(True)
+            self.listWidget.setSelectionMode(True)
+
+    def table_disabled(self,bool):
+        if bool:
+            self.tableWidget.setFocusPolicy(QtCore.Qt.NoFocus)
+            self.tableWidget.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
+            self.tab_disabled = True
+        else:
+            self.tableWidget.setFocusPolicy(True)
+            self.tableWidget.setSelectionMode(True)
+            self.tab_disabled = False
 
     # def joue_piece(self):
     #     if self.listWidget.isEnabled():
@@ -313,14 +349,14 @@ class Ui_MainWindow(object):
 
     def joue_piece2(self):
 
-        if self.first:
+        if self.first: #traite le premier cas
             if launched_game.current_player == 1:
-                self.listWidget.setDisabled(False)
-                self.tableWidget.setDisabled(True)
+                self.list_disabled(False)
+                self.table_disabled(True)
                 self.label_7.setText("Choisis une pièce")
                 if self.listWidget.selectedItems():
-                    self.listWidget.setDisabled(True)
-                    self.tableWidget.setDisabled(True)
+                    self.list_disabled(True)
+                    self.table_disabled(True)
                     launched_game.select_piece(int(self.listWidget.currentItem().text()[0:2]))
                     launched_game.turns_played = deque([(None, launched_game.selected_piece.num)])
                     self.pushButton_3.setStyleSheet(" font : bold 12px")
@@ -329,8 +365,8 @@ class Ui_MainWindow(object):
                     launched_game.current_player = -1
                     self.label_7.setText("laisse moi réfléchir !")
             else:
-                self.listWidget.setDisabled(True)
-                self.tableWidget.setDisabled(False)
+                self.list_disabled(False)
+                self.table_disabled(False)
                 num_piece = randrange(0,((game.SIZE)**2)-1)
                 launched_game.select_piece(num_piece)
                 item = self.listWidget.findItems(str(num_piece) + ' :', QtCore.Qt.MatchStartsWith)[0]
@@ -341,14 +377,30 @@ class Ui_MainWindow(object):
                 self.pushButton_3.setStyleSheet("")
                 launched_game.current_player = 1
                 self.label_7.setText("Place la pièce")
-        else:
+                self.list_disabled(True)
+        else: #durant la partie
             if launched_game.current_player == 1:
-                if self.tableWidget.isEnabled():
-                    row = self.tableWidget.currentRow()
-                    col = self.tableWidget.currentColumn()
+                if not self.tab_disabled:
+                   row = self.tableWidget.currentRow()
+                   col = self.tableWidget.currentColumn()
+                   if self.lineEdit.text()!='':
                     launched_game.coord = (row,col)
                     if self.tableWidget.item(row, col) == None:
-                        item = QtWidgets.QTableWidgetItem(self.listWidget.currentItem().text())
+                        self.list_disabled(True)
+                        self.table_disabled(False)
+                        if game.SIZE == 4 and PICTURES:
+                            item = QtWidgets.QTableWidgetItem()
+                            text = ''
+                            for i in launched_game.selected_piece.charact:
+                                text += str(i)
+                            icon_path = "../images/" + text + ".png"
+                            icon = QtGui.QIcon(icon_path)
+                            item.setIcon(icon)
+                            #item.setSizeHint(QtCore.QSize(300,300))
+                            #item.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+                            self.tableWidget.setIconSize(QtCore.QSize(60, 60))
+                        else:
+                            item = QtWidgets.QTableWidgetItem(self.listWidget.currentItem().text())
                         self.tableWidget.setItem(row, col, item)
                         self.tableWidget.item(row, col).setFlags(QtCore.Qt.ItemIsEnabled)
 
@@ -357,8 +409,8 @@ class Ui_MainWindow(object):
                         launched_game.end = launched_game.win
 
                         self.listWidget.takeItem(self.listWidget.currentRow())
-                        self.listWidget.setDisabled(False)
-                        self.tableWidget.setDisabled(True)
+                        self.list_disabled(False)
+                        self.table_disabled(True)
                         self.listWidget.clearSelection()
                         self.tableWidget.clearSelection()
                         self.lineEdit.clear()
@@ -375,9 +427,8 @@ class Ui_MainWindow(object):
                         launched_game.select_piece(num)
                         launched_game.turns_played.append((launched_game.coord, num))
                         print(launched_game.turns_played)
-
-                        self.listWidget.setDisabled(True)
-                        self.tableWidget.setDisabled(True)
+                        self.list_disabled(True)
+                        self.table_disabled(True)
                         launched_game.current_player = -1
                         self.pushButton_3.setStyleSheet(" font : bold 12px")
                         self.pushButton_2.setStyleSheet("")
@@ -385,7 +436,9 @@ class Ui_MainWindow(object):
 
 
             else:
-
+                    rappel = launched_game.selected_piece.charact
+                    self.list_disabled(False)
+                    print(rappel)
                     # ((coordinates, num_piece), v) = ia.minimax(launched_game, 3)
                     #((coordinates, num_piece), v) = ia.alphabeta(launched_game, 3)
                     if len(launched_game.bag) >= 2**launched_game.size - launched_game.size :
@@ -399,8 +452,20 @@ class Ui_MainWindow(object):
                     launched_game.play_turn(coordinates, num_piece)
                     row = coordinates[0]
                     col = coordinates[1]
-                    item = QtWidgets.QTableWidgetItem(self.listWidget.currentItem().text())
+                    if game.SIZE == 4 and PICTURES:
+                        item = QtWidgets.QTableWidgetItem()
+                        text = ''
+                        for i in rappel:
+                            text += str(i)
+                        icon_path = "../images/" + text + ".png"
+                        icon = QtGui.QIcon(icon_path)
+                        item.setIcon(icon)
+                        self.tableWidget.setIconSize(QtCore.QSize(100, 100))
+                    else:
+                        item = QtWidgets.QTableWidgetItem(self.listWidget.currentItem().text())
                     self.tableWidget.setItem(row, col, item)
+
+
                     self.listWidget.takeItem(self.listWidget.currentRow())
                     self.tableWidget.item(row, col).setFlags(QtCore.Qt.ItemIsEnabled)
                     if not num_piece == None:
@@ -410,8 +475,8 @@ class Ui_MainWindow(object):
                     print(launched_game.turns_played)
                     print(launched_game.board)
                     print(launched_game)
-                    self.listWidget.setDisabled(True)
-                    self.tableWidget.setDisabled(False)
+                    self.table_disabled(False)
+                    self.list_disabled(True)
                     launched_game.current_player = 1
                     self.pushButton_2.setStyleSheet(" font : bold 12px")
                     self.pushButton_3.setStyleSheet("")
