@@ -384,11 +384,18 @@ class Ui_MainWindow(object):
                         self.label_7.setText("laisse moi réfléchir !")
 
 
-            else:
-
+            else:   
+                    print len(launched_game.bag)
+                
+                    if len(launched_game.bag) == launched_game.size**2 - 1:
+                        num = randrange(launched_game.size**2 - 1)
+                        while num == launched_game.selected_piece:
+                            num = randrange(launched_game.size**2 - 2)
+                        (coordinates, num_piece) = ((randrange(launched_game.size), randrange(launched_game.size)), num)
+                        
                     # ((coordinates, num_piece), v) = ia.minimax(launched_game, 3)
                     #((coordinates, num_piece), v) = ia.alphabeta(launched_game, 3)
-                    if len(launched_game.bag) >= 2**launched_game.size - launched_game.size :
+                    elif len(launched_game.bag) >= 2**launched_game.size - launched_game.size:
                         ((coordinates, num_piece), v) = ia.alphabeta(launched_game, 2)
                     elif 2**launched_game.size - launched_game.size > len(launched_game.bag) >= 6 :#2*launched_game.size :
                         ((coordinates, num_piece), v) = ia.alphabeta(launched_game, 3)
