@@ -435,13 +435,25 @@ class Ui_MainWindow(object):
                         self.label_7.setText("laisse moi réfléchir !")
 
 
+<<<<<<< HEAD
             else:
                     rappel = launched_game.selected_piece.charact
                     self.list_disabled(False)
                     print(rappel)
+=======
+            else:   
+                    print len(launched_game.bag)
+                
+                    if len(launched_game.bag) == launched_game.size**2 - 1:
+                        num = randrange(launched_game.size**2 - 1)
+                        while num == launched_game.selected_piece:
+                            num = randrange(launched_game.size**2 - 1)
+                        (coordinates, num_piece) = ((randrange(launched_game.size), randrange(launched_game.size)), num)
+                        
+>>>>>>> 44b574f0fd710b80ba0b33ac8a3c2908fbf0da04
                     # ((coordinates, num_piece), v) = ia.minimax(launched_game, 3)
                     #((coordinates, num_piece), v) = ia.alphabeta(launched_game, 3)
-                    if len(launched_game.bag) >= 2**launched_game.size - launched_game.size :
+                    elif len(launched_game.bag) >= 2**launched_game.size - launched_game.size:
                         ((coordinates, num_piece), v) = ia.alphabeta(launched_game, 2)
                     elif 2**launched_game.size - launched_game.size > len(launched_game.bag) >= 6 :#2*launched_game.size :
                         ((coordinates, num_piece), v) = ia.alphabeta(launched_game, 3)

@@ -20,7 +20,7 @@ def eval_line(L, n, p):
         else:
             C += elem
     if C_N + C == n or C ==0:
-        if 0 < C_N < 4:
+        if 0 < C_N < n:
             i = 0
             elem = L[i]
             while elem == None :
