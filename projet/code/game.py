@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 
 
-import numpy as np
+
 import piece
 from collections import deque
 
 
-
+# Globals variables
 PLAYER_A = 1
 PLAYER_B = -1
 SIZE = 4
@@ -19,53 +19,59 @@ DEBUG = True
 class Bag_error(Exception):
     pass
 
+
 class Cell_error(Exception):
     pass
-        
+
+
 class Game:
-
     def __init__(self, size):
+        """
+        A Game represents a state of game : a size, a board, a bag of pieces (dic), a current player, a selected
+        piece (None first), win (bool), end (bool), coords, coord
+        :param size (int):
+        """
         self.size = size
-        self.board = [[[None for i in range(self.size)] for j in range(self.size)] for k in range(self.size)] #creates a 3D board
-
+        self.board = [[[None for _ in range(self.size)] for _ in range(self.size)] for _ in range(self.size)]  # 3D board
         self.bag = {}
         self.init_full_bag()
-
         self.current_player = PLAYER_A
         self.selected_piece = None
-        # On initialise avec la pièce 0 car le choix de la première piece et de son emplacement n'a que tres
-        # peu d'importance
-        #self.select_piece(0)
-
-        self.win = False
+        self.win = False  # True if a player wins : "Quarto!"
         self.end = False
-        self.coords = [(i,j) for i in range(self.size) for j in range(self.size)] # list of all possibles coordinates
+        self.coords = [(i, j) for i in range(self.size) for j in range(self.size)]  # list of all possibles coordinates
+        self.coord = None  # couple, initialized to None
+        # self.turns_played = deque([(None, self.selected_piece.num)])
 
-        # A LIFO (last in first out) in order to store every action from each player
-        # An element is a tuple (coord, sel_piece) which represents
-        #self.turns_played = deque([(None, self.selected_piece.num)])
-        self.coord = None
-
-    def init_from_turns_played(self, list_of_turns):
+    def init_full_bag(self):
         """
-        Init the board from a list of turns played by different players
-        :param list_of_turns: list
-        :return:
+        Initializes the bag at the beginning of the game : all pieces are present in the bag
         """
-        # A rajouter si on change l'init juste au dessus (la pièce 0 est selectionnée de base)
-        self.select_piece(list_of_turns[0][1])
-        for i in range(1, len(list_of_turns)):
-            x = list_of_turns[i][0][0]
-            y = list_of_turns[i][0][1]
-            self.play_turn((x, y), list_of_turns[i][1])
-
-
-    def init_full_bag(self):   #initializes the bag at the beginning of the game
         for i in range(2**self.size):
-            self.bag[i] = piece.Piece(i,self.size)                  #adds the list in the bag, the key equals to the binary number
+            self.bag[i] = piece.Piece(i, self.size)  # adds the piece in the bag, the key equals to the binary number
 
+    def is_board_filled(self):
+        """
+        Verifies if all the position of the board are occupied by a piece
+        :return: boolean
+        """
+        no_piece = [None for _ in range(self.size)]
+        for line in self.board:
+            if no_piece in line:  # if there is an empty place, the board is not filled
+                return False
+        return True
 
-    def play_piece(self,coord):
+    def select_piece(self, num):
+        """
+        Selects the piece whom number is num (decimal) as the game.selected_piece of the game.current_player and removes
+        it from the bag.
+        :param num : int between 0 and game.size**2:
+        """
+        piece = self.bag[num]
+        del self.bag[num]
+        self.selected_piece = piece
+
+    def play_piece(self, coord):
         x, y = coord[0], coord[1]
         # try :
         #     coord = self.coords[self.coords.index(coord)]
@@ -84,34 +90,20 @@ class Game:
         # Update the "end state of the game
         self.end = self.win or self.is_board_filled()
 
-    def select_piece(self,num):
-        # try:
-        piece = self.bag[num]
-        del self.bag[num]                             #removes the Piece from the bag
-        self.selected_piece = piece
-        # except Exception: #Error if self.bag[num_piece] doesn't exist anymore
-        #     print(Bag_error("this piece has already been played: Choose an other one"))
-        #     i = int(input("Numéro de la pièce = "))
-        #     self.select_piece(i)
-
     def play_turn(self, coord, num):
         """
-        Basic method to play a turn
+        Basic method to play a turn. Then, updates game.win, game.end, game.current_player
         :param coord: coordinate where the selected_piece will be placed
         :param num: the representative number of the piece which will be selected for the other player
-        :return:
         """
         self.play_piece(coord)
-
         if num is None:
             self.selected_piece = None
         else:
             self.select_piece(num)
-
         self.win = self.full_row(coord, self.size)
         # TODO: voir si le joueur à compris qu'il avait gagné et donc le jeu ne sera pas forcément finit dés qu'il y aura 4 pièces alignées
         self.end = self.win
-
         self.turns_played.append((coord, num))
         self.current_player *= -1
 
@@ -119,7 +111,6 @@ class Game:
         """
         Go back to the last game's state (from the other player)
         Assumes that play_turn has already been called
-        :return:
         """
         (coord, last_selected_piece) = self.turns_played.pop()
         self.selected_piece = piece.Piece(self.turns_played[-1][1], self.size)
@@ -128,26 +119,31 @@ class Game:
         self.board[coord[0]][coord[1]] = [None for _ in range(self.size)]
         self.current_player *= -1
 
+    def init_from_turns_played(self, list_of_turns):
+        """
+        Init the board from a list of turns played by different players
+        :param list_of_turns: list
+        """
+        self.select_piece(list_of_turns[0][1])
+        for i in range(1, len(list_of_turns)):
+            x = list_of_turns[i][0][0]
+            y = list_of_turns[i][0][1]
+            self.play_turn((x, y), list_of_turns[i][1])
 
-    def full_row(self,coord,n): #verifies if there is a full horizontal, vertical, or diagonal row of n pieces with the same characteristics after putting the piece at the coordinates(x,y) on the board
+    def full_row(self, coord, n):
+        """
+        verifies if there is a full horizontal, vertical, or diagonal row of n pieces with the same characteristics
+        after putting the piece at t
+        :param coord:
+        :param n:
+        :return:
+        """
+        #he coordinates(x,y) on the board
         victory = []
         for i in range(self.size):
-            layer_i = layer_tab(self.board,i)
-            victory.append(row_layer(layer_i,n,coord))
+            layer_i = layer_tab(self.board, i)
+            victory.append(row_layer(layer_i, n, coord))
         return True in victory
-
-    def is_board_filled(self):
-        """
-        Verifies if all the position of the board are occupied by a piece
-        :return: boolean
-        """
-        # we assume it is filled
-        no_piece = [None for _ in range(self.size)]
-        for line in self.board:
-            # if it sees an empty place, the board is not filled
-            if no_piece in line:
-                return False
-        return True
 
     def __repr__(self):
         """
@@ -174,7 +170,7 @@ class Game:
         return res
 
 
-def row(list,n): #returns if there is a row of n '1' in a simple list
+def row(list, n): #returns if there is a row of n '1' in a simple list
     compteur_1 = 0
     compteur_0 = 0
     max_compteur_1 = 0
