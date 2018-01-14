@@ -89,7 +89,7 @@ class Game:
                 self.board[x][y][k] = self.selected_piece.charact[k]
 
         # update the "win" state of the game
-        self.win = self.full_row((x, y), self.size)
+        self.win = self.full_row((x, y), self.size) #self.full_row2((x, y))
 
         # Update the "end state of the game
         self.end = self.win or self.is_board_filled()
@@ -105,7 +105,7 @@ class Game:
             self.selected_piece = None
         else:
             self.select_piece(num)
-        self.win = self.full_row(coord, self.size)
+        self.win = self.full_row(coord, self.size) #self.full_row2(coord)
         # TODO: voir si le joueur à compris qu'il avait gagné et donc le jeu ne sera pas forcément finit dés qu'il y aura 4 pièces alignées
         self.end = self.win
         self.turns_played.append((coord, num))
@@ -148,6 +148,23 @@ class Game:
             layer_i = layer_tab(self.board, i)
             victory.append(row_layer(layer_i, n, coord))
         return True in victory
+
+    def full_row2(self, coord):
+        board = self.board
+        n = self.size
+        i, j = coord[0], coord[1]
+        res = False
+        for k in range(n):
+            line_h = [board[i][m][k] for m in range(n)]
+            line_v = [board[m][j][k] for m in range(n)]
+            diag1 = [None]*n
+            diag2 = [None]*n
+            if i == j:
+                diag1 = [board[m][m][k] for m in range(n)]
+            if i + j == n - 1:
+                diag2 = [board[m][n-1-m][k] for m in range(n)]
+            res = res or (n in [align_line(line_h, n), align_line(line_v, n), align_line(diag1, n), align_line(diag2, n)])
+        return res
 
     def __repr__(self):
         """
@@ -255,18 +272,17 @@ def vertical(tab,coord): #returns the column where the element is of the table
 
 
 
+def align_line(L, n):
+    C = 0
+    C_N = 0
+    for i, elem in enumerate(L):
+        if elem == None:
+            C_N += 1
+        else:
+            C += elem
+    if C_N + C == n or C == 0:
+        res = n - C_N
+    else:
+        res = 0
+    return res
 
-
-# jeu = Game(4)
-# print(jeu.bag)
-# print(jeu.board)
-# jeu.select_piece(3)
-# print(jeu.selected_piece)
-# print(jeu.bag)
-# jeu.play_piece((1,1))
-# print(jeu.board)
-# jeu.select_piece(3)
-# jeu.select_piece(4)
-# print(jeu.selected_piece)
-# jeu.play_piece((1,1))
-# print(jeu.board)

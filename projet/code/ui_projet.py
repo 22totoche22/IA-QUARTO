@@ -405,7 +405,7 @@ class Ui_MainWindow(object):
                         self.tableWidget.item(row, col).setFlags(QtCore.Qt.ItemIsEnabled)
 
                         launched_game.play_piece((row, col))
-                        launched_game.win = launched_game.full_row((row,col), launched_game.size)
+                        launched_game.win = launched_game.full_row((row,col), launched_game.size) #launched_game.full_row2((row,col))
                         launched_game.end = launched_game.win
 
                         self.listWidget.takeItem(self.listWidget.currentRow())
