@@ -72,6 +72,10 @@ class Game:
         self.selected_piece = piece
 
     def play_piece(self, coord):
+        """
+        Puts the game.selected_piece at coordinates coord. Then, updates game.win and game.end
+        :param coord: a couple
+        """
         x, y = coord[0], coord[1]
         # try :
         #     coord = self.coords[self.coords.index(coord)]
@@ -132,7 +136,7 @@ class Game:
 
     def full_row(self, coord, n):
         """
-        verifies if there is a full horizontal, vertical, or diagonal row of n pieces with the same characteristics
+        Verifies if there is a full horizontal, vertical, or diagonal row of n pieces with the same characteristics
         after putting the piece at t
         :param coord:
         :param n:
@@ -189,7 +193,13 @@ def row(list, n): #returns if there is a row of n '1' in a simple list
     return max_compteur_1 == n or max_compteur_0 == n
 
 
-def layer_tab(board, k):     #return the k layer of a 3D board
+def layer_tab(board, k):
+    """
+    Returns the k layer of a 3D board. Does nothing if k >= len(board)
+    :param board: a 3D board (list of lists of lists)
+    :param k: int
+    :return: a 2D board (list of lists)
+    """
     n = len(board)
     if k < n:
         layer = [[0 for _ in range(n)] for _ in range(n)]
