@@ -44,11 +44,11 @@ def eval(game): #applique la fonction eval_line sur chaque ligne du jeu + les di
     for k in range(game.size):
         p = game.selected_piece.charact[k]
         for i in range(game.size):
-            line1 = [board[i][l][k] for l in range(game.size)]
-            line2 = [board[l][i][k] for l in range(game.size)]
+            line1 = [board[i][j][k] for j in range(game.size)]
+            line2 = [board[j][i][k] for j in range(game.size)]
             evaluation = evaluation + eval_line(line1, game.size, p) + eval_line(line2, game.size, p)
-        line3 = [board[l][l][k] for l in range(game.size)]
-        line4 = [board[l][game.size-1-l][k] for l in range(game.size)]
+        line3 = [board[j][j][k] for j in range(game.size)]
+        line4 = [board[j][game.size-1-j][k] for j in range(game.size)]
         evaluation = evaluation + eval_line(line3, game.size, p) + eval_line(line4,game.size, p)
     return evaluation
 
