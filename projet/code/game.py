@@ -105,6 +105,7 @@ class Game:
             self.selected_piece = None
         else:
             self.select_piece(num)
+        # TODO : effacer la ligne suivante ?
         self.win = self.full_row(coord, self.size) #self.full_row2(coord)
         # TODO: voir si le joueur à compris qu'il avait gagné et donc le jeu ne sera pas forcément finit dés qu'il y aura 4 pièces alignées
         self.end = self.win
