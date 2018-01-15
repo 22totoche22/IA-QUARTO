@@ -6,12 +6,12 @@ import game
 import ia
 from collections import deque
 from random import randrange
+
 launched_game = game.Game(game.SIZE)
-#il faut commenter dans game #self.select_piece(0) et #self.turns_played = deque([(None, self.selected_piece.num)])
-#j'ai rajouté attribut coord
 PICTURES = True
 
 class Ui_MainWindow(object):
+
     def setupUi(self, MainWindow):
 
 
@@ -242,8 +242,6 @@ class Ui_MainWindow(object):
         self.listWidget.item(len(launched_game.bag)).setFlags(QtCore.Qt.ItemIsEnabled)
 
 
-
-        #self.label_6.setStyleSheet(" font : bold 12px")
         self.label_7.setText("Choisis qui commence")
         self.list_disabled(True)
         self.table_disabled(True)
@@ -259,11 +257,13 @@ class Ui_MainWindow(object):
         self.listWidget.itemSelectionChanged.connect(self.ecrit_piece)
         self.tableWidget.itemSelectionChanged.connect(self.ecrit_coord)
         self.buttonBox.rejected.connect(self.annul)
-        self.buttonBox.accepted.connect(self.joue_piece2)
+        self.buttonBox.accepted.connect(self.joue_piece)
 
         self.pushButton_2.clicked.connect(self.choose)
         self.pushButton_3.clicked.connect(self.chooseb)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+
 
         '''les fonctions'''
 
@@ -304,82 +304,44 @@ class Ui_MainWindow(object):
             self.tableWidget.setSelectionMode(True)
             self.tab_disabled = False
 
-    # def joue_piece(self):
-    #     if self.listWidget.isEnabled():
-    #         if self.listWidget.selectedItems():
-    #             if launched_game.current_player == 1:
-    #                 self.label_5.setStyleSheet(" font : bold 12px")
-    #                 self.label_6.setStyleSheet("")
-    #                 launched_game.current_player = -1
-    #
-    #             else:
-    #                 self.label_6.setStyleSheet(" font : bold 12px")
-    #                 self.label_5.setStyleSheet("")
-    #                 launched_game.current_player = 1
-    #             launched_game.select_piece(int(self.listWidget.currentItem().text()[0:2])) # à generaliser
-    #             self.listWidget.setDisabled(True)
-    #             self.tableWidget.setDisabled(False)
-    #             self.label_7.setText("Choisis les coordonnées")
-    #
-    #     else:
-    #
-    #             row = self.tableWidget.currentRow()
-    #             col = self.tableWidget.currentColumn()
-    #             if self.tableWidget.item(row, col) == None:  # si la cellule est vide
-    #                 item = QtWidgets.QTableWidgetItem(self.listWidget.currentItem().text())
-    #                 self.tableWidget.setItem(row, col, item)
-    #                 self.tableWidget.item(row, col).setFlags(QtCore.Qt.ItemIsEnabled)
-    #                 self.listWidget.takeItem(self.listWidget.currentRow())
-    #                 self.listWidget.setDisabled(False)
-    #                 self.tableWidget.setDisabled(True)
-    #                 self.label_7.setText("Choisis une pièce")
-    #                 coord = (row,col)
-    #                 launched_game.play_piece(coord)
-    #                 launched_game.win = launched_game.full_row(coord, game.SIZE)
-    #                 if launched_game.win:
-    #                     self.pushButton.setStyleSheet("color : red; font : bold 16px")
-    #                     self.tableWidget.setDisabled(True)
-    #                     self.listWidget.setDisabled(True)
-    #
-    #
-    #                 self.listWidget.clearSelection()
-    #                 self.tableWidget.clearSelection()
-    #                 self.lineEdit.clear()
-    #                 self.lineEdit_2.clear()
 
-    def joue_piece2(self):
-
-        if self.first: #traite le premier cas
-            if launched_game.current_player == 1:
-                self.list_disabled(False)
-                self.table_disabled(True)
-                self.label_7.setText("Choisis une pièce")
-                if self.listWidget.selectedItems():
-                    self.list_disabled(True)
-                    self.table_disabled(True)
-                    launched_game.select_piece(int(self.listWidget.currentItem().text()[0:2]))
-                    launched_game.turns_played = deque([(None, launched_game.selected_piece.num)])
-                    self.pushButton_3.setStyleSheet(" font : bold 12px")
-                    self.pushButton_2.setStyleSheet("")
-                    self.first = False
-                    launched_game.current_player = -1
-                    self.label_7.setText("laisse moi réfléchir !")
-            else:
-                self.list_disabled(False)
-                self.table_disabled(False)
-                num_piece = randrange(0,((game.SIZE)**2)-1)
-                launched_game.select_piece(num_piece)
-                item = self.listWidget.findItems(str(num_piece) + ' :', QtCore.Qt.MatchStartsWith)[0]
-                self.listWidget.setCurrentItem(item)
-                launched_game.turns_played = deque([(None, launched_game.selected_piece.num)])
-                self.first = False
-                self.pushButton_2.setStyleSheet(" font : bold 12px")
-                self.pushButton_3.setStyleSheet("")
-                launched_game.current_player = 1
-                self.label_7.setText("Place la pièce")
+    def first_play(self): #traite le premier cas
+        if launched_game.current_player == 1:
+            self.list_disabled(False)
+            self.table_disabled(True)
+            self.label_7.setText("Choisis une pièce")
+            if self.listWidget.selectedItems():
                 self.list_disabled(True)
+                self.table_disabled(True)
+                launched_game.select_piece(int(self.listWidget.currentItem().text()[0:2]))
+                launched_game.turns_played = deque([(None, launched_game.selected_piece.num)])
+                self.pushButton_3.setStyleSheet(" font : bold 12px")
+                self.pushButton_2.setStyleSheet("")
+                self.first = False
+                launched_game.current_player = -1
+                self.label_7.setText("laisse moi réfléchir !")
+        else:
+            self.list_disabled(False)
+            self.table_disabled(False)
+            num_piece = randrange(0, ((game.SIZE) ** 2) - 1)
+            launched_game.select_piece(num_piece)
+            item = self.listWidget.findItems(str(num_piece) + ' :', QtCore.Qt.MatchStartsWith)[0]
+            self.listWidget.setCurrentItem(item)
+            launched_game.turns_played = deque([(None, launched_game.selected_piece.num)])
+            self.first = False
+            self.pushButton_2.setStyleSheet(" font : bold 12px")
+            self.pushButton_3.setStyleSheet("")
+            launched_game.current_player = 1
+            self.label_7.setText("Place la pièce")
+            self.list_disabled(True)
+
+
+    def joue_piece(self):
+        if self.first:
+            self.first_play()
         else: #durant la partie
-            if launched_game.current_player == 1:
+
+            if launched_game.current_player == 1: #tour du joueur
                 if not self.tab_disabled:
                    row = self.tableWidget.currentRow()
                    col = self.tableWidget.currentColumn()
@@ -397,17 +359,16 @@ class Ui_MainWindow(object):
                             icon = QtGui.QIcon(icon_path)
                             item.setIcon(icon)
                             #item.setSizeHint(QtCore.QSize(300,300))
-                            #item.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+                            #item.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
                             self.tableWidget.setIconSize(QtCore.QSize(60, 60))
                         else:
                             item = QtWidgets.QTableWidgetItem(self.listWidget.currentItem().text())
+
                         self.tableWidget.setItem(row, col, item)
                         self.tableWidget.item(row, col).setFlags(QtCore.Qt.ItemIsEnabled)
-
                         launched_game.play_piece((row, col))
                         launched_game.win = launched_game.full_row((row,col), launched_game.size) #launched_game.full_row2((row,col))
                         launched_game.end = launched_game.win
-
                         self.listWidget.takeItem(self.listWidget.currentRow())
                         self.list_disabled(False)
                         self.table_disabled(True)
@@ -422,7 +383,6 @@ class Ui_MainWindow(object):
                         self.label_7.setText("Choisis une pièce")
                 else:
                     if self.listWidget.selectedItems():
-
                         num = int(self.listWidget.currentItem().text()[0:2]) # à generaliser
                         launched_game.select_piece(num)
                         launched_game.turns_played.append((launched_game.coord, num))
@@ -434,9 +394,7 @@ class Ui_MainWindow(object):
                         self.pushButton_2.setStyleSheet("")
                         self.label_7.setText("laisse moi réfléchir !")
 
-
-
-            else:   
+            else:   #tour du joueur
                     rappel = launched_game.selected_piece.charact
                     self.list_disabled(False)
                     if len(launched_game.bag) == launched_game.size**2 - 1:
@@ -444,7 +402,6 @@ class Ui_MainWindow(object):
                         while num == launched_game.selected_piece:
                             num = randrange(launched_game.size**2 - 1)
                         (coordinates, num_piece) = ((randrange(launched_game.size), randrange(launched_game.size)), num)
-
 
                     # ((coordinates, num_piece), v) = ia.minimax(launched_game, 3)
                     #((coordinates, num_piece), v) = ia.alphabeta(launched_game, 3)
@@ -454,7 +411,6 @@ class Ui_MainWindow(object):
                         ((coordinates, num_piece), v) = ia.alphabeta(launched_game, 3)
                     else :# len(launched_game.bag) <= launched_game.size :
                         ((coordinates, num_piece), v) = ia.alphabeta(launched_game, 6)
-
 
                     launched_game.play_turn(coordinates, num_piece)
                     row = coordinates[0]
@@ -476,7 +432,7 @@ class Ui_MainWindow(object):
                     self.listWidget.takeItem(self.listWidget.currentRow())
                     self.tableWidget.item(row, col).setFlags(QtCore.Qt.ItemIsEnabled)
                     if not num_piece == None:
-                        item = self.listWidget.findItems(str(num_piece)+' :',QtCore.Qt.MatchStartsWith)[0] #return a list of the items which have the beginning asked
+                        item = self.listWidget.findItems(str(num_piece)+' :',QtCore.Qt.MatchStartsWith)[0] #return a list of the item which have the beginning asked
                         self.listWidget.setCurrentItem(item)
 
                     print(launched_game.turns_played)
@@ -495,16 +451,6 @@ class Ui_MainWindow(object):
                         self.listWidget.setDisabled(True)
                         print(launched_game)
                         print(launched_game.turns_played)
-
-
-
-
-
-
-
-
-
-
 
     def ecrit_piece(self):
         self.lineEdit_2.setText((self.listWidget.currentItem().text()))
