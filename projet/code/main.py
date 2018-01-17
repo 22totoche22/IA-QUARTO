@@ -1,3 +1,6 @@
+
+# -*- coding: utf-8 -*-
+
 import time
 import game
 import ia
@@ -11,7 +14,7 @@ if __name__ == "__main__":
     # deque([(None, 3), ((1, 2), 15), ((3, 3), 13), ((2, 2), 7), ((3, 2), 11)])
     ## DEBUT MAIN AVEC IA
     # launched_game.select_piece(randrange(launched_game.size))
-    launched_game.select_piece(3)
+    launched_game.select_piece(0)
     launched_game.turns_played = deque([(None, launched_game.selected_piece.num)])
     # launched_game.init_from_turns_played([(None, 3), ((1, 2), 15)])
     while not launched_game.end:
