@@ -3,7 +3,8 @@
 
 #TODO: changer le nom de ce module ?
 
-import time
+import ia
+from random import randrange
 SCORE_MAX = float("inf") # représente l'infini
 DEBUG = False
 
@@ -248,6 +249,28 @@ def alphabeta(game, depth, player=1, alpha = -float("inf"), beta = float("inf"))
 
 ############ FIN ALPHA BETA ################
 
-    
+
+def select_best_turn(launched_game):
+    do_the_depth = 0
+    coord = None
+    num_piece = None
+
+    if len(launched_game.bag) == launched_game.size ** 2 - 1:
+        num_piece = randrange(launched_game.size ** 2 - 1)
+        while num_piece == launched_game.selected_piece:
+            num_piece = randrange(launched_game.size ** 2 - 1)
+        coord = ((randrange(launched_game.size), randrange(launched_game.size)))
+
+    elif len(launched_game.bag) >= 2 ** launched_game.size - launched_game.size:
+        do_the_depth = 2
+    elif 2 ** launched_game.size - launched_game.size > len(launched_game.bag) >= 6:
+        do_the_depth = 3
+    else:  # len(launched_game.bag) <= launched_game.size :
+        do_the_depth = 6
+
+    if coord is None:
+        (coord, num_piece), v = ia.alphabeta(launched_game, do_the_depth)
+
+    return coord, num_piece
 
 

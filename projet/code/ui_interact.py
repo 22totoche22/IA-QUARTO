@@ -222,21 +222,7 @@ class Ui_interact(ui_window.Ui_MainWindow):
             else:  # tour du joueur
                 rappel = launched_game.selected_piece.charact
                 self.list_disabled(False)
-                if len(launched_game.bag) == launched_game.size ** 2 - 1:
-                    num = randrange(launched_game.size ** 2 - 1)
-                    while num == launched_game.selected_piece:
-                        num = randrange(launched_game.size ** 2 - 1)
-                    (coordinates, num_piece) = ((randrange(launched_game.size), randrange(launched_game.size)), num)
-
-                # ((coordinates, num_piece), v) = ia.minimax(launched_game, 3)
-                # ((coordinates, num_piece), v) = ia.alphabeta(launched_game, 3)
-                elif len(launched_game.bag) >= 2 ** launched_game.size - launched_game.size:
-                    ((coordinates, num_piece), v) = ia.alphabeta(launched_game, 2)
-                elif 2 ** launched_game.size - launched_game.size > len(
-                        launched_game.bag) >= 6:  # 2*launched_game.size :
-                    ((coordinates, num_piece), v) = ia.alphabeta(launched_game, 3)
-                else:  # len(launched_game.bag) <= launched_game.size :
-                    ((coordinates, num_piece), v) = ia.alphabeta(launched_game, 6)
+                (coordinates, num_piece) = ia.select_best_turn(launched_game)
 
                 launched_game.play_turn(coordinates, num_piece)
                 row = coordinates[0]

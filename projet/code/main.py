@@ -20,8 +20,6 @@ from random import randrange
 t1 = time.time()
 if __name__ == "__main__":
     launched_game = game.Game(game.SIZE)
-    # deque([(None, 3), ((1, 2), 15), ((3, 3), 1), ((2, 2), 7), ((3, 2), 5)])
-    # deque([(None, 3), ((1, 2), 15), ((3, 3), 13), ((2, 2), 7), ((3, 2), 11)])
     ## DEBUT MAIN AVEC IA
     # launched_game.select_piece(randrange(launched_game.size))
     error = False
@@ -85,24 +83,9 @@ if __name__ == "__main__":
             depth = 0
             
            
-            if len(launched_game.bag) == launched_game.size**2 - 1:
-                        num_piece = randrange(launched_game.size**2 - 1)
-                        while num_piece == launched_game.selected_piece:
-                            num_piece = randrange(launched_game.size**2 - 1)
-                        coord = ((randrange(launched_game.size), randrange(launched_game.size)))
-                        
+            (coord, num_piece) = ia.select_best_turn(launched_game)
 
-                   
-            
-            elif len(launched_game.bag) >= 2**launched_game.size - launched_game.size:
-                ((coord, num_piece), v) = ia.alphabeta(launched_game, 2)
-                
-            elif 2**launched_game.size - launched_game.size > len(launched_game.bag) >= 6 :
-                ((coord, num_piece), v) = ia.alphabeta(launched_game, 3)
-                
-            else :# len(launched_game.bag) <= launched_game.size :
-                ((coord, num_piece), v) = ia.alphabeta(launched_game, 6)
-            print (coord, num_piece)
+            print(coord, num_piece)
             
             
             launched_game.play_turn(coord, num_piece)
