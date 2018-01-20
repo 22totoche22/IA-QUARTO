@@ -1,129 +1,104 @@
 # -*- coding: utf-8 -*-
-import time
 import game
 import ia
-
-
-
-class Bag_error(Exception):
-    pass
-
-
-class Cell_error(Exception):
-    pass
-
-
-
 from collections import deque
 from random import randrange
 
-t1 = time.time()
+
+# Here is defined 3 Exceptions concerning the bag, the board and the players
+class BagError(Exception):
+    pass
+
+
+class BoardError(Exception):
+    pass
+
+
+class PlayerError(Exception):
+    pass
+
+
 if __name__ == "__main__":
+
     launched_game = game.Game(game.SIZE)
-    ## DEBUT MAIN AVEC IA
-    # launched_game.select_piece(randrange(launched_game.size))
-    error = False
-    launched_game.current_player = int(input("{:=^50}".format(" choisissez le premier joueur : ")
-                                            +("\n\n")
-                                            +"{:=^50}".format(" joueur 1 ou joueur -1 ? ")
-                                            +("\n\n")))
-    compteur = 0
-    while error == False:
-        if launched_game.current_player == 1:
-            num = int(input(("choisissez la première pièce : ")))
-            break
-        
-        elif launched_game.current_player == -1:
-            num = randrange(game.SIZE**2)
-            break
-        
-        else: # Traitement du cas où le joueur est trop con et n'est pas foutu de taper "1" ou "-1"
-            launched_game.current_player = int(input("{:=^50}".format(" vous vous êtes trompé : ")
-                                            +("\n\n")
-                                            +"{:=^50}".format(" recommencez : ")
-                                            +("\n\n")))
-            compteur += 1
-            if compteur >= 5:
-                launched_game.current_player = int(input("{:=^50}".format(" c'est bon t'as fini de rigoler ? ")
-                                            +("\n\n")
-                                            +"{:=^50}".format(" tape 1 ou -1 bordel ! ")
-                                            +("\n\n")))
-                
-        
-        
-        
+    size = launched_game.size
+
+    while True:
+        try:
+            launched_game.current_player = int(input("{:=^50}".format(" choisissez le premier joueur : ") + "\n\n"
+                                                     + "{:=^50}".format(" joueur 1 ou joueur -1 ? ")  + "\n\n"))
+            if launched_game.current_player in [1, -1]:
+                break
+            else:
+                raise PlayerError
+        except PlayerError:
+            print("Veillez choisir seulement entre 1 et -1" + "\n\n")
+        except ValueError:
+            print("Veillez choisir seulement entre 1 et -1" + "\n\n")
+
+    if launched_game.current_player == 1:
+        while True:
+            try:
+                num = int(input("choisissez la première pièce : "))
+                if 0 <= num <= 2**size - 1:
+                    break
+                else:
+                    raise BagError
+            except BagError:
+                print("Veillez choisir un numéro entre 0 et " + str(size ** 2 - 1))
+            except ValueError:
+                print("Veillez choisir un numéro entre 0 et " + str(size ** 2 - 1))
+
+    if launched_game.current_player == -1:
+        num = randrange(size ** 2)
+
     launched_game.select_piece(num)
     launched_game.turns_played = deque([(None, launched_game.selected_piece.num)])
-    # launched_game.init_from_turns_played([(None, 3), ((1, 2), 15)])
     launched_game.current_player *= -1
-    while not launched_game.end:
-        if launched_game.current_player == 1:
 
+    while not launched_game.end:
+
+        if launched_game.current_player == 1:
             print("\n\n{:=^50}".format("Tour du joueur " + str(launched_game.current_player)))
-            print("Sélectionnez la coordonnées où vous voulez placer la pièce ({}) : ".format(launched_game.selected_piece))
             print()
             print(launched_game)
-            x = int(input("x coord = "))
-            y = int(input("y coord = "))
-
-            # TODO : Verify if the user input is correct
-
+            print("Sélectionnez les coordonnées où vous voulez placer la pièce ({}) : ".format(
+                launched_game.selected_piece))
+            while True:
+                try:
+                    x = int(input("x coord = "))
+                    y = int(input("y coord = "))
+                    if 0 <= x < size and 0 <= y < size and launched_game.board[x][y] == [None]*size:
+                        break
+                    else:
+                        raise BoardError
+                except BoardError:
+                    print("Ces coordonées ne sont pas sur le plateau")
+                except ValueError:
+                    print("Veillez saisir des coordonnées entières")
             print("Sélectionnez la pièce que jouera l'autre joueur ou tapez 'Quarto!' si vous pensez avoir gagné\n")
-            for (index, el) in launched_game.bag.items():
-                print(el)
-            # TODO: si le joueur ecrit quarto! vérifier qu'il a gagné
-            i = int(input("Numéro de la pièce = "))
-            
-                
-
+            while True:
+                try:
+                    i = int(input("Numéro de la pièce = "))
+                    if i in launched_game.bag:
+                        break
+                    else:
+                        raise BagError
+                except BagError:
+                    print("Cette pièce n'est pas disponible")
+                except ValueError:
+                    print("le numéro de la pièce doit être un entier")
             launched_game.play_turn((x, y), i)
-        elif launched_game.current_player == -1:
+
+        else:
             print("\n\n{:=^50}".format(" Tour de Charles-Maurice "))
-            t1 = time.time()
-            depth = 0
-            
-           
             (coord, num_piece) = ia.select_best_turn(launched_game)
-
-            print(coord, num_piece)
-            
-            
+            print("Charles-Maurice a placé la pièce " + str(launched_game.selected_piece) +
+                  " aux coordonnées " + str(coord) + " et vous donne la pièce " + str(num_piece))
             launched_game.play_turn(coord, num_piece)
-                
 
-            print(time.time()-t1)
-
-    print("{:#^50}".format("!!!!!!! QUARTOOOOO !!!!!"))
-    print("#"*20 + "FIN DU JEU" + "#"*20)
+    if launched_game.win:
+        print("{:#^50}".format("!!!!!!! QUARTOOOOO !!!!!"))
+    print("#" * 20 + "FIN DU JEU" + "#" * 20)
     print(launched_game.turns_played)
     print(launched_game)
-
-
-    # Beginning of the game loop
-    # while not launched_game.end:
-    #     print("\n\n{:=^50}".format("Tour du joueur "+str(launched_game.current_player)))
-    #     print("Sélectionnez la coordonnées où vous voulez placer la pièce ({}) : ".format(launched_game.selected_piece))
-    #     print()
-    #     print(launched_game)
-    #     x = int(input("x coord = "))
-    #     y = int(input("y coord = "))
-    #
-    #     # TODO : Verify if the user input is correct
-    #
-    #     # launched_game.play_piece((x,y))
-    #     # print(launched_game)
-    #     #
-    #     # launched_game.end = launched_game.full_row((x,y),launched_game.size)
-    #
-    #     print("Sélectionnez la pièce que jouera l'autre joueur ou tapez 'Quarto!' si vous pensez avoir gagné\n")
-    #     for (index, el) in launched_game.bag.items():
-    #         print(el)
-    #     # TODO: si le joueur ecrit quarto! vérifier qu'il a gagné
-    #     i = int(input("Numéro de la pièce = "))
-    #     # launched_game.select_piece(i)
-    #     # launched_game.current_player *= -1
-    #
-    #     launched_game.play_turn((x, y), i)
-
-    
-
