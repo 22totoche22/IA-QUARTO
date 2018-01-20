@@ -202,6 +202,9 @@ class Ui_interact(ui_window.Ui_MainWindow):
                             self.lineEdit.clear()
                             self.lineEdit_2.clear()
                             if launched_game.end:
+                                self.pushButton_2.setStyleSheet(" font : bold 12px")
+                                self.pushButton_3.setStyleSheet("")
+                                self.label_7.setText("Tu as gagné")
                                 self.pushButton.setStyleSheet("color : red; font : bold 16px")
                                 self.tableWidget.setDisabled(True)
                                 self.listWidget.setDisabled(True)
@@ -258,6 +261,9 @@ class Ui_interact(ui_window.Ui_MainWindow):
                 self.label_7.setText("Place la pièce")
 
                 if launched_game.end:
+                    self.pushButton_3.setStyleSheet(" font : bold 12px")
+                    self.pushButton_2.setStyleSheet("")
+                    self.label_7.setText("C'était bien trop facile !")
                     self.pushButton.setStyleSheet("color : red; font : bold 16px")
                     self.tableWidget.setDisabled(True)
                     self.listWidget.setDisabled(True)
