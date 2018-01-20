@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-
 import piece
 from collections import deque
 
@@ -14,14 +13,6 @@ SIZE = 4
 
 # In order to print things in the console to help with debugging
 DEBUG = True
-
-
-class Bag_error(Exception):
-    pass
-
-
-class Cell_error(Exception):
-    pass
 
 
 class Game:
@@ -38,10 +29,10 @@ class Game:
         self.current_player = PLAYER_A
         self.selected_piece = None
         self.win = False  # True if a player wins : "Quarto!"
-        self.end = False
+        self.end = self.win or self.is_board_filled()  # In a further development, game.end will have other functions
         self.coords = [(i, j) for i in range(self.size) for j in range(self.size)]  # list of all possibles coordinates
         self.coord = None  # couple, initialized to None
-        # self.turns_played = deque([(None, self.selected_piece.num)])
+        self.turns_played = None # a LIFO that sums up the played turns
 
     def init_full_bag(self):
         """
@@ -77,21 +68,13 @@ class Game:
         :param coord: a couple
         """
         x, y = coord[0], coord[1]
-        # try :
-        #     coord = self.coords[self.coords.index(coord)]
-        #     del self.coords[self.coords.index(coord)]
-        # except Exception:  # Error if the coordinates "coord" have already been choosen
-        #         print(Cell_error("this cell is already taken: Choose an other one"))
-        #         x = int(input("x coord = "))
-        #         y = int(input("y coord = "))
-        #         self.play_piece((x,y))
         for k in range(self.size):
                 self.board[x][y][k] = self.selected_piece.charact[k]
 
-        # update the "win" state of the game
-        self.win = self.full_row((x, y), self.size) #self.full_row2((x, y))
+        #  update the "win" state of the game
+        self.win = self.full_row2((x, y))
 
-        # Update the "end state of the game
+        #  Update the "end state of the game
         self.end = self.win or self.is_board_filled()
 
     def play_turn(self, coord, num):
@@ -105,9 +88,7 @@ class Game:
             self.selected_piece = None
         else:
             self.select_piece(num)
-        # TODO : effacer la ligne suivante ?
-        self.win = self.full_row(coord, self.size) #self.full_row2(coord)
-        # TODO: voir si le joueur à compris qu'il avait gagné et donc le jeu ne sera pas forcément finit dés qu'il y aura 4 pièces alignées
+        self.win = self.full_row2(coord)
         self.end = self.win
         self.turns_played.append((coord, num))
         self.current_player *= -1
@@ -135,22 +116,12 @@ class Game:
             y = list_of_turns[i][0][1]
             self.play_turn((x, y), list_of_turns[i][1])
 
-    def full_row(self, coord, n):
-        """
-        Verifies if there is a full horizontal, vertical, or diagonal row of n pieces with the same characteristics
-        after putting the piece at t
-        :param coord:
-        :param n:
-        :return:
-        """
-        #he coordinates(x,y) on the board
-        victory = []
-        for i in range(self.size):
-            layer_i = layer_tab(self.board, i)
-            victory.append(row_layer(layer_i, n, coord))
-        return True in victory
-
     def full_row2(self, coord):
+        """
+        Verifies whether the lines crossing coord make alignment or not
+        :param coord:
+        :return: boolean
+        """
         board = self.board
         n = self.size
         i, j = coord[0], coord[1]
@@ -169,111 +140,31 @@ class Game:
 
     def __repr__(self):
         """
-        Renvoi un affichage de l'état de jeu courant
-        :return: (String) res : représente l'état de jeu
+        Returns a display of a state of the game
+        :return: (String) res
         """
         res = ""
         res += "Pièce sélectionnée par le joueur adverse : " + str(self.selected_piece) + "\n"*2
-
         for y_board in range(self.size):
             for i_layer in range(self.size):
                 for x_board in range(self.size):
                     res += "." if self.board[x_board][y_board][i_layer] is None else str(self.board[x_board][y_board][i_layer])
                 res += "\t"*2
             res += "\n"
-
         res += "\n"
-
         res += "pièces restantes dans le sac : \n"
-
         for p in self.bag.values():
             res += str(p) + "\n"
-
         return res
 
 
-def row(list, n): #returns if there is a row of n '1' in a simple list
-    compteur_1 = 0
-    compteur_0 = 0
-    max_compteur_1 = 0
-    max_compteur_0 = 0
-    for i in list:
-        if i == 1:
-            compteur_1 += 1
-            compteur_0 = 0
-            max_compteur_1 = max(compteur_1,max_compteur_1)
-            max_compteur_0 = 0
-        if i == 0:
-            compteur_1 = 0
-            compteur_0 += 1
-            max_compteur_0 = max(compteur_0,max_compteur_0)
-            max_compteur_1 = 0
-    return max_compteur_1 == n or max_compteur_0 == n
-
-
-def layer_tab(board, k):
-    """
-    Returns the k layer of a 3D board. Does nothing if k >= len(board)
-    :param board: a 3D board (list of lists of lists)
-    :param k: int
-    :return: a 2D board (list of lists)
-    """
-    n = len(board)
-    if k < n:
-        layer = [[0 for _ in range(n)] for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                    layer[i][j] = board[i][j][k]
-        return layer
-
-
-
-def row_layer(layer,n,coord): #returns True if there is a full horizontal, vertical, or diagonal row of'1' or '0' with the point whose coordinates are (x,y) in the layer, coord is a tuple
-    x,y = coord[0], coord[1]
-    long = len(layer)
-    horizontale = layer[x]
-    verticale = vertical(layer,(x,y))
-    diagonale = diagonal(layer,(x,y))
-    diagonale_t = diagonal_t(layer,(x,y))
-    victory = row(horizontale,long) or row(verticale,long) or row(diagonale,long) or row(diagonale_t,long)
-    return victory
-
- # def row_layer(layer,n,coord): #returns if there is a horizontal, vertical, or diagonal row of n '1' with the point whose coordinates are (x,y) in the layer, coord is a tuple
- #     x,y = coord[0], coord[1]
- #     long = len(layer)
- #     horizontal = layer[x]
- #     vertical = np.transpose(layer)[y]
- #     diagonal_d = np.diag(layer,y-x)
- #     diagonal_g = np.diag(np.fliplr(layer),(long-y)-x)
- #     victory = row(horizontal,n) or row(vertical,n) or row(diagonal_d,n) or row(diagonal_g,n)
- #      return victory
-
-
-def diagonal(tab,coord): #returns the diagonal of the table if the element is on the diagonal , coord is a tuple
-    diagonale = []
-    if coord[0] == coord[1]:
-        for i,j in enumerate(tab):
-            diagonale.append(j[i])
-    return diagonale
-
-def diagonal_t(tab,coord): #returns the other diagonal of the table(which is a square) if the element is on this diagonal , coord is a tuple
-    diagonale = []
-    n = len(tab)
-    if coord[0] == n-1 - coord[1]:
-        for i, j in enumerate(tab):
-            diagonale.append(j[n-1-i])
-    return diagonale
-
-def vertical(tab,coord): #returns the column where the element is of the table
-    verticale = []
-    for i in tab:
-        verticale.append(i[coord[1]])
-    return verticale
-
-
-
-
 def align_line(L, n):
+    """
+    L is a list of 0, 1 or None. Returns the number of aligned digits (0 or 1)
+    :param L: a list
+    :param n: size of L
+    :return:
+    """
     C = 0
     C_N = 0
     for i, elem in enumerate(L):
@@ -286,4 +177,3 @@ def align_line(L, n):
     else:
         res = 0
     return res
-

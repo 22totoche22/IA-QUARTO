@@ -76,26 +76,32 @@ if __name__ == "__main__":
                     print("Ces coordonées ne sont pas sur le plateau")
                 except ValueError:
                     print("Veillez saisir des coordonnées entières")
-            print("Sélectionnez la pièce que jouera l'autre joueur ou tapez 'Quarto!' si vous pensez avoir gagné\n")
-            while True:
-                try:
-                    i = int(input("Numéro de la pièce = "))
-                    if i in launched_game.bag:
-                        break
-                    else:
-                        raise BagError
-                except BagError:
-                    print("Cette pièce n'est pas disponible")
-                except ValueError:
-                    print("le numéro de la pièce doit être un entier")
+            if launched_game.bag != {}:
+                print("Sélectionnez la pièce que jouera l'autre joueur ou tapez 'Quarto!' si vous pensez avoir gagné\n")
+                while True:
+                    try:
+                        i = int(input("Numéro de la pièce = "))
+                        if i in launched_game.bag:
+                            break
+                        else:
+                            raise BagError
+                    except BagError:
+                        print("Cette pièce n'est pas disponible")
+                    except ValueError:
+                        print("le numéro de la pièce doit être un entier")
+            else :
+                i = None
             launched_game.play_turn((x, y), i)
 
         else:
             print("\n\n{:=^50}".format(" Tour de Charles-Maurice "))
-            (coord, num_piece) = ia.select_best_turn(launched_game)
-            print("Charles-Maurice a placé la pièce " + str(launched_game.selected_piece) +
-                  " aux coordonnées " + str(coord) + " et vous donne la pièce " + str(num_piece))
-            launched_game.play_turn(coord, num_piece)
+            turn = ia.select_best_turn(launched_game)
+            print(turn)
+            if turn is not None:
+                coord, num_piece = turn[0], turn[1]
+                print("Charles-Maurice a placé la pièce " + str(launched_game.selected_piece) +
+                    " aux coordonnées " + str(coord) + " et vous donne la pièce " + str(num_piece))
+                launched_game.play_turn(coord, num_piece)
 
     if launched_game.win:
         print("{:#^50}".format("!!!!!!! QUARTOOOOO !!!!!"))
