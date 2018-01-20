@@ -1,0 +1,37 @@
+IA-Quarto
+
+Ce projet est un jeu de Quarto où un joueur joue avec une IA (appelée Charles-Maurice).
+
+Fonctionnement : 
+
+En lançant le fichier main_ui.py, une interface graphique s'ouvre, représentant un espace de jeu.
+Choisir le joueur qui commence (Bob i.e le joueur ou Charles-Maurice)
+Cliquer sur les pièces du sac ou sur les cases du jeu pour faire les actions correspondantes. C
+Cliquer sur OK pour valider chacune des actions. Attention, il faut cliquer deux fois sur OK pour 
+lancer le tour de l'IA
+
+En lançant le fichier main.py, un espace de jeu plus sommaire s'ouvre dans la console, avec les pièces 
+restantes, celle sélectionnée, et les 4 couches du jeu (une par caractéristique des pièces). Les pièces
+sont représentée par leur représentation binaire ici.
+Choisir le jouer qui commence (1 pour le joueur, -1 pour l'IA)
+Puis suivre les instructions.
+Les commandes sont robustes aux erreurs de frappe
+
+Description du code :
+
+En plus de ces deux fichiers, le projet est composé :
+-- du fichier piece.py qui représente les pièces
+-- du fichier game.py qui code les règles et définit un état de jeu
+-- du fichier ia.py qui implémente l'IA
+-- des fichiers ui_interact.py et ui_windows.py qui se chargent de l'interface graphique
+
+Limites :
+
+-- une erreur a été détectée qui rend parfois la fin du jeu impossible : 
+l'aplhabeta renvoie parfois () pour un tour ce qui ne permet pas d'aboutir à la fin du jeu.
+Erreur qui n'a pas réussie à être corrigée.
+
+-- Le bouton Quarto est désactivé dans l'interface graphique. De même, il n'est pas possible
+pour un joueur de signifier qu'il a gagné dans la console. 
+
+-- Le dernier tour de jeu dans la console est problématique
