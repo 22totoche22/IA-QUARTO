@@ -29,9 +29,10 @@ Limites :
 
 -- une erreur a été détectée qui rend parfois la fin du jeu impossible : 
 l'aplhabeta renvoie parfois () pour un tour ce qui ne permet pas d'aboutir à la fin du jeu.
-Erreur qui n'a pas réussie à être corrigée.
+Erreur qui n'a pas réussie à être corrigée. Elle apparaît notamment lorsqu'au fait jouer l'IA contre
+elle-même (dans deux fenêtres séparée par exemple). L'erreur est traitée dans l'exception AbandonningError
 
 -- Le bouton Quarto est désactivé dans l'interface graphique. De même, il n'est pas possible
 pour un joueur de signifier qu'il a gagné dans la console. 
 
--- Le dernier tour de jeu dans la console est problématique
+-- Le dernier tour de jeu dans la console est problématique.
