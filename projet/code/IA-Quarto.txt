@@ -29,11 +29,13 @@ Limites :
 
 -- une erreur a été détectée qui rend parfois la fin du jeu impossible : 
 l'aplhabeta renvoie parfois () pour un tour ce qui ne permet pas d'aboutir à la fin du jeu.
-La parade consiste à faire faire à l'ia dans ce cas un tour au hasard puisqu'il semblerait que l'ia
-soit vouée à perdre dans ce cas... Le jeu est donc fonctionnel jusqu'à la fin mais certains coups 
-peuvent être du au hasard.
+La parade consiste à faire faire à l'ia dans ce cas un tour au hasard. Le jeu est donc fonctionnel 
+jusqu'à la fin mais certains coups peuvent être du au hasard.
+Apparaît not. quand on fait jouer Charles-Maurice contre lui-même.
+Il est souvent facile de gagner après ce coup de l'ia.
 
 -- Le bouton Quarto est désactivé dans l'interface graphique. De même, il n'est pas possible
 pour un joueur de signifier qu'il a gagné dans la console. 
 
--- Le dernier tour de jeu dans la console est problématique car on ne sort pas de la boucle.
+-- Le dernier tour de jeu dans la console est problématique car on ne sort pas de la boucle une fois 
+la partie finie.
