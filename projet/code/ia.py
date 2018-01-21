@@ -235,4 +235,13 @@ def select_best_turn(launched_game):
     else:
         do_the_depth = 6
     turn, v = ia.alphabeta(launched_game, do_the_depth)
+    if turn == ():  # gère le cas problèmatique non résolu de turn = ()
+        print("turn = () donc hasard")
+        num = randrange(launched_game.size ** 2)
+        while num not in launched_game.bag:
+            num = randrange(launched_game.size ** 2)
+        (x, y) = (randrange(launched_game.size), randrange(launched_game.size))
+        while launched_game.board[x][y] != [None] * launched_game.size:
+            (x, y) = (randrange(launched_game.size), randrange(launched_game.size))
+        turn = ((x, y), num)
     return turn

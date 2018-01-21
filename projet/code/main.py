@@ -17,6 +17,7 @@ class BoardError(Exception):
 class PlayerError(Exception):
     pass
 
+
 class AbandoningError(Exception):
     pass
 
@@ -100,8 +101,6 @@ if __name__ == "__main__":
             print("\n\n{:=^50}".format(" Tour de Charles-Maurice "))
             turn = ia.select_best_turn(launched_game)
             print(turn)
-            if turn == ():
-                raise AbandoningError("Rosebud...")
             if turn is not None:
                 coord, num_piece = turn[0], turn[1]
                 print("Charles-Maurice a placé la pièce " + str(launched_game.selected_piece) +
